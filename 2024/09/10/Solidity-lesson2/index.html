@@ -87,7 +87,7 @@
 <meta property="og:description" content="Target: Get familiar with hardhat testing and deployment1. Set up typescriptWe are going to use typescript for its popularity and readability in this whole course.  Let’s install it first: 1yarn add -">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-09-10T14:07:32.245Z">
-<meta property="article:modified_time" content="2024-09-10T14:30:58.408Z">
+<meta property="article:modified_time" content="2024-09-12T12:23:19.908Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 
@@ -330,12 +330,34 @@
 <h2 id="3-Deployment"><a href="#3-Deployment" class="headerlink" title="3. Deployment"></a>3. Deployment</h2><ol>
 <li><p>create deployment script under ‘scripts’ folder</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;@nomicfoundation/hardhat-ethers&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">deploy</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> <span class="title class_">HelloWorld</span> = <span class="keyword">await</span> ethers.<span class="title function_">getContractFactory</span>(<span class="string">&quot;HelloWorld&quot;</span>);</span><br><span class="line">  <span class="keyword">const</span> helloWorld = <span class="keyword">await</span> <span class="title class_">HelloWorld</span>.<span class="title function_">deploy</span>();</span><br><span class="line">  <span class="keyword">await</span> helloWorld.<span class="title function_">waitForDeployment</span>();</span><br><span class="line">  <span class="keyword">return</span> helloWorld;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">sayHello</span>(<span class="params"><span class="attr">hello</span>: <span class="built_in">any</span></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">await</span> hello.<span class="title function_">hello</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">deploy</span>().<span class="title function_">then</span>(sayHello);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>ethers.getContractFactory(&quot;HelloWorld&quot;)</code>:<ul>
+<li>This retrieves a ContractFactory object for the HelloWorld contract, which is a wrapper around the compiled contract. A ContractFactory is an abstraction used to deploy new smart contracts.</li>
+<li>The “HelloWorld” string references the contract by its name. Hardhat uses the contract’s ABI (Application Binary Interface) and bytecode (compiled form) to create this factory.</li>
+</ul>
+</li>
+<li><code>HelloWorld.deploy()</code>:<ul>
+<li>This function call initiates the deployment of the HelloWorld contract onto the blockchain. It broadcasts a transaction to the Ethereum network (or a local development network in the case of Hardhat), which contains the bytecode of the smart contract.</li>
+<li>Once the contract is deployed, you get an instance of the contract (helloWorld), which represents the deployed contract on-chain(included in the mem-pool).</li>
+</ul>
+</li>
+<li><code>await helloWorld.waitForDeployment();</code>:<ul>
+<li>This waits for the contract deployment transaction to be mined and included in a block. After that, the helloWorld object will be fully initialized and ready to interact with.</li>
+</ul>
+</li>
+</ul>
 </li>
 <li><p>start a local EVM environment</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat node</span><br></pre></td></tr></table></figure></li>
 <li><p>execute the deployment script to publish contracts to the test net</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat run ./scripts/deploy-hello.ts --network localhost</span><br></pre></td></tr></table></figure></li>
 </ol>
+<h2 id="4-Further-reading"><a href="#4-Further-reading" class="headerlink" title="4. Further reading"></a>4. Further reading</h2><ul>
+<li><strong>Hardhat</strong>: The core development environment that runs your project, manages tasks, and handles things like contract compilation, running tests, and connecting to networks.</li>
+<li><strong>@nomicfoundation&#x2F;hardhat-ethers</strong>: A plugin that enhances Hardhat by adding ethers.js functionalities, allowing you to interact with Ethereum in a simple, pre-configured way.</li>
+<li><strong>ethers</strong>: A customized version of ethers that is tightly integrated with Hardhat, not directly from the original ethers.js library.</li>
+</ul>
 
       
     </div>
@@ -369,6 +391,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2024/09/12/Solidity-lesson3.1/" rel="prev" title="Solidity Lesson 3.1 - Connecting to Metamask">
+                Solidity Lesson 3.1 - Connecting to Metamask <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -445,7 +471,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -482,7 +508,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Target-Get-familiar-with-hardhat-testing-and-deployment"><span class="nav-number">1.</span> <span class="nav-text">Target: Get familiar with hardhat testing and deployment</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Set-up-typescript"><span class="nav-number">1.1.</span> <span class="nav-text">1. Set up typescript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Testing"><span class="nav-number">1.2.</span> <span class="nav-text">2. Testing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Deployment"><span class="nav-number">1.3.</span> <span class="nav-text">3. Deployment</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Target-Get-familiar-with-hardhat-testing-and-deployment"><span class="nav-number">1.</span> <span class="nav-text">Target: Get familiar with hardhat testing and deployment</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Set-up-typescript"><span class="nav-number">1.1.</span> <span class="nav-text">1. Set up typescript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Testing"><span class="nav-number">1.2.</span> <span class="nav-text">2. Testing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Deployment"><span class="nav-number">1.3.</span> <span class="nav-text">3. Deployment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Further-reading"><span class="nav-number">1.4.</span> <span class="nav-text">4. Further reading</span></a></li></ol></li></ol></div>
             
 
           </div>
