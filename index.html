@@ -229,6 +229,145 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/16/Solidity-lesson3.3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/09/16/Solidity-lesson3.3/" itemprop="url">Solidity Lesson 3.2 - Randomness</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-16T14:51:33+08:00">
+                2024-09-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Target-Blockchain-Ethereum-Randomness-101"><a href="#Target-Blockchain-Ethereum-Randomness-101" class="headerlink" title="Target: Blockchain(Ethereum) Randomness 101"></a>Target: Blockchain(Ethereum) Randomness 101</h1><h2 id="1-Code-Example"><a href="#1-Code-Example" class="headerlink" title="1. Code Example"></a>1. Code Example</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.24;</span><br><span class="line"></span><br><span class="line">contract Hero &#123;</span><br><span class="line">    enum HeroType &#123;</span><br><span class="line">        Mege,</span><br><span class="line">        Healer,</span><br><span class="line">        Barbarian</span><br><span class="line">    &#125;</span><br><span class="line">    mapping(address =&gt; uint256[]) private addressToHeroType;</span><br><span class="line"></span><br><span class="line">    function getHeros() public view returns (uint256[] memory) &#123;</span><br><span class="line">        return addressToHeroType[msg.sender];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function createHero(HeroType _type) public payable &#123;</span><br><span class="line">        require(msg.value &gt;= 0.5 ether, &quot;please send at least 0.5 eth&quot;);</span><br><span class="line"></span><br><span class="line">        uint256[] memory stats = new uint[](5);</span><br><span class="line">        stats[0] = 2;</span><br><span class="line">        stats[1] = 7;</span><br><span class="line">        stats[2] = 12;</span><br><span class="line">        stats[3] = 17;</span><br><span class="line">        stats[4] = 22;</span><br><span class="line"></span><br><span class="line">        uint256 len = 5;</span><br><span class="line">        uint h = uint256(_type);</span><br><span class="line"></span><br><span class="line">        do &#123;</span><br><span class="line">            uint256 pos = generateRandom() % len;</span><br><span class="line">            uint256 value = (generateRandom() % (13 + len)) + 1;</span><br><span class="line">            h |= value &lt;&lt; stats[pos];</span><br><span class="line">            len--;</span><br><span class="line">            stats[pos] = stats[len];</span><br><span class="line">        &#125; while (len &gt; 0);</span><br><span class="line"></span><br><span class="line">        addressToHeroType[msg.sender].push(h);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function generateRandom() public view returns (uint256) &#123;</span><br><span class="line">        return</span><br><span class="line">            uint256(</span><br><span class="line">                keccak256(</span><br><span class="line">                    abi.encodePacked(</span><br><span class="line">                        block.prevrandao,</span><br><span class="line">                        block.timestamp,</span><br><span class="line">                        msg.sender</span><br><span class="line">                    )</span><br><span class="line">                )</span><br><span class="line">            );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-Why-the-generateRandom-is-insecure"><a href="#1-Why-the-generateRandom-is-insecure" class="headerlink" title="1. Why the generateRandom() is insecure"></a>1. Why the <code>generateRandom()</code> is insecure</h3><p><strong>Randomness via On-Chain Data (e.g., block.timestamp, block.prevrandao)</strong></p>
+<pre><code>Using data like block.timestamp, block.prevrandao, and msg.sender is a common approach for generating “random” numbers in smart contracts. The idea is to take some data that varies from block to block and hash it (usually with keccak256), which gives a result that looks random but is predictable for someone who knows all the inputs.
+</code></pre>
+<h3 id="2-Other-issues"><a href="#2-Other-issues" class="headerlink" title="2. Other issues"></a>2. Other issues</h3><ul>
+<li>shall we store the ‘stats’ other places to save gas?<ul>
+<li><strong>in ‘storage’</strong>? NO! Reading from and writing to storage is much more expensive than working with memory. Storing a small, fixed-size array in storage may increase gas costs rather than reduce them.</li>
+<li><strong>specifing it as ‘constant’?</strong> it is a good idea, however, only primitive time and fixed-sized byte array can be specified as ‘constant’</li>
+<li><strong>specifing it as ‘immutable’?</strong> similar to ‘constant’, array can not specified as ‘immutable’.</li>
+</ul>
+</li>
+<li><code>stats[pos] = stats[len];</code><br>This is very similar to the swap in the quicksort</li>
+</ul>
+<h2 id="2-Chainlink-VRF-2-5"><a href="#2-Chainlink-VRF-2-5" class="headerlink" title="2. Chainlink VRF 2.5"></a>2. Chainlink VRF 2.5</h2><h3 id="True-randomness-can-only-be-generated-off-chain"><a href="#True-randomness-can-only-be-generated-off-chain" class="headerlink" title="True randomness can only be generated off-chain"></a>True randomness can only be generated off-chain</h3><p><strong>Deterministic nature of blockchain</strong>: The Ethereum blockchain, like most blockchains, operates in a deterministic manner. This means that every operation performed on the blockchain must produce the same result for all nodes in the network. This determinism is essential to ensure consensus among all nodes, allowing them to agree on the state of the blockchain.</p>
+<ul>
+<li>Consensus: All nodes in the Ethereum network must be able to independently verify transactions and blocks to reach consensus.</li>
+<li>Security: Determinism ensures that the outcome of a transaction is predictable and verifiable by anyone running an Ethereum node.</li>
+</ul>
+<h3 id="How-to-use-chainlink-VRF"><a href="#How-to-use-chainlink-VRF" class="headerlink" title="How to use chainlink VRF"></a>How to use chainlink VRF</h3><p><a target="_blank" rel="noopener" href="https://docs.chain.link/vrf/v2-5/subscription/get-a-random-number">Chainlink VRF2.5</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/15/Solidity-lesson3.2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1401,7 +1540,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
