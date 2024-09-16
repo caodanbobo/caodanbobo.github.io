@@ -229,6 +229,239 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/16/Solidity-lesson4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/09/16/Solidity-lesson4/" itemprop="url">Solidity Lesson 4 - Upgradeable Smart Contracts</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-16T21:38:26+08:00">
+                2024-09-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Target-Understanding-Upgradeable-Smart-Contracts"><a href="#Target-Understanding-Upgradeable-Smart-Contracts" class="headerlink" title="Target: Understanding Upgradeable Smart Contracts"></a>Target: Understanding Upgradeable Smart Contracts</h1><h2 id="1-Key-concepts"><a href="#1-Key-concepts" class="headerlink" title="1. Key concepts"></a>1. Key concepts</h2><h3 id="1-1-Fallback-function"><a href="#1-1-Fallback-function" class="headerlink" title="1.1 Fallback function"></a>1.1 Fallback function</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fallback() external payable&#123;&#125;</span><br><span class="line">receieve() external payable&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>fallback</strong> is a special function that is executed either when</p>
+<ul>
+<li>a function that does not exist is called or</li>
+<li>Ether is sent directly to a contract but receive() does not exist or msg.data is not empty</li>
+</ul>
+<h3 id="1-2-Delegatecall-function"><a href="#1-2-Delegatecall-function" class="headerlink" title="1.2 Delegatecall function"></a>1.2 Delegatecall function</h3><p><strong>delegatecall</strong> is a low level function similar to <code>call</code>.<br>When contract A executes delegatecall to contract B, B’s code is executed with contract A’s storage, <code>msg.sender</code> and <code>msg.value</code>.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.24;</span><br><span class="line"></span><br><span class="line">// NOTE: Deploy this contract first</span><br><span class="line">contract B &#123;</span><br><span class="line">    // NOTE: storage layout must be the same as contract A</span><br><span class="line">    uint256 public num;</span><br><span class="line">    address public sender;</span><br><span class="line">    uint256 public value;</span><br><span class="line"></span><br><span class="line">    function setVars(uint256 _num) public payable &#123;</span><br><span class="line">        num = _num;</span><br><span class="line">        sender = msg.sender;</span><br><span class="line">        value = msg.value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract A &#123;</span><br><span class="line">    uint256 public num;</span><br><span class="line">    address public sender;</span><br><span class="line">    uint256 public value;</span><br><span class="line"></span><br><span class="line">    function setVars(address _contract, uint256 _num) public payable &#123;</span><br><span class="line">        // A&#x27;s storage is set, B is not modified.</span><br><span class="line">        (bool success, bytes memory data) = _contract.delegatecall(</span><br><span class="line">            abi.encodeWithSignature(&quot;setVars(uint256)&quot;, _num)</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-Storage"><a href="#1-3-Storage" class="headerlink" title="1.3 Storage"></a>1.3 Storage</h3><ul>
+<li>Storage Slot Assignment: In Solidity, state variables are assigned to storage slots in the order they are declared:<ul>
+<li>The first declared variable is stored in slot 0.</li>
+<li>The second in slot 1, and so on.</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">contract MyImplementation &#123;</span><br><span class="line">    uint256 public value;  // Stored in slot 0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Proxy Contract Storage: Even though the proxy contract doesn’t explicitly declare a value variable, its storage layout is still accessible to the implementation contract when delegatecall is used.<br>When delegatecall is invoked:</li>
+<li>The value variable in MyImplementation refers to storage slot 0.</li>
+<li>This slot 0 is located in the proxy contract’s storage.<br>Thus, when MyImplementation’s setValue function is called through the proxy:</li>
+<li>The value in slot 0 of the proxy’s storage is updated.</li>
+</ul>
+<h2 id="2-The-idea-of-Upgradeable-contracts"><a href="#2-The-idea-of-Upgradeable-contracts" class="headerlink" title="2. The idea of Upgradeable contracts"></a>2. The idea of Upgradeable contracts</h2><p>Now, we have learnt the basics, the idea of upgradeable contracts is based on this:</p>
+<ol>
+<li>Undefined function calls to the proxy contract can be handled by the fallback function which will make a <code>delegatecall</code> to respective implementation contracts.</li>
+<li><code>delegatecall</code> would only modify the proxy contract’s state variables, as long as those variables’ slot position and type are identical to implememtation contracts’, everything will works fine.</li>
+</ol>
+<h2 id="3-Patterns-of-Upgradeable-contracts"><a href="#3-Patterns-of-Upgradeable-contracts" class="headerlink" title="3. Patterns of Upgradeable contracts"></a>3. Patterns of Upgradeable contracts</h2><h3 id="3-1-Transparent-Proxy"><a href="#3-1-Transparent-Proxy" class="headerlink" title="3.1 Transparent Proxy"></a>3.1 Transparent Proxy</h3><p>Separates admin and user roles clearly, with the proxy itself handling upgrades and admin functions.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract Implementation &#123;</span><br><span class="line">    uint256 public value;</span><br><span class="line"></span><br><span class="line">    function setValue(uint256 _value) external &#123;</span><br><span class="line">        value = _value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">contract TransparentProxy &#123;</span><br><span class="line">    address private _implementation;</span><br><span class="line">    address private _admin;</span><br><span class="line"></span><br><span class="line">    constructor(address implementation_, address admin_) &#123;</span><br><span class="line">        _implementation = implementation_;</span><br><span class="line">        _admin = admin_;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modifier onlyAdmin() &#123;</span><br><span class="line">        require(msg.sender == _admin, &quot;Not admin&quot;);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function upgradeTo(address newImplementation) external onlyAdmin &#123;</span><br><span class="line">        _implementation = newImplementation;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _delegate(address implementation) internal &#123;</span><br><span class="line">        assembly &#123;</span><br><span class="line">            // Copy the call data.</span><br><span class="line">            calldatacopy(0, 0, calldatasize())</span><br><span class="line"></span><br><span class="line">            // Delegate the call to the implementation.</span><br><span class="line">            let result := delegatecall(gas(), implementation, 0, calldatasize(), 0, 0)</span><br><span class="line"></span><br><span class="line">            // Copy the returned data.</span><br><span class="line">            returndatacopy(0, 0, returndatasize())</span><br><span class="line"></span><br><span class="line">            // Return the result of the call.</span><br><span class="line">            switch result</span><br><span class="line">            case 0 &#123; revert(0, returndatasize()) &#125;</span><br><span class="line">            default &#123; return(0, returndatasize()) &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fallback() external payable &#123;</span><br><span class="line">        if (msg.sender == _admin) &#123;</span><br><span class="line">            // If the caller is the admin, do nothing.</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        // Otherwise, delegate the call to the implementation.</span><br><span class="line">        _delegate(_implementation);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    receive() external payable &#123;</span><br><span class="line">        // Allow the contract to receive ETH.</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">contract ProxyAdmin &#123;</span><br><span class="line">    address public owner;</span><br><span class="line"></span><br><span class="line">    constructor() &#123;</span><br><span class="line">        owner = msg.sender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modifier onlyOwner() &#123;</span><br><span class="line">        require(msg.sender == owner, &quot;Not owner&quot;);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function changeProxyAdmin(TransparentProxy proxy, address newAdmin) external onlyOwner &#123;</span><br><span class="line">        proxy.upgradeTo(newAdmin);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function upgrade(TransparentProxy proxy, address newImplementation) external onlyOwner &#123;</span><br><span class="line">        proxy.upgradeTo(newImplementation);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In this example, ProxyAdmin is used to control the proxy, and it is not necessary, especially for a single proxy scenario. The ProxyAdmin contract is an additional layer used to manage the proxy contract</p>
+<h3 id="3-2-UUPS-Universal-Upgradeable-Proxy-Standard"><a href="#3-2-UUPS-Universal-Upgradeable-Proxy-Standard" class="headerlink" title="3.2 UUPS(Universal Upgradeable Proxy Standard)"></a>3.2 UUPS(Universal Upgradeable Proxy Standard)</h3><p>Places more responsibility on the implementation contract for managing upgrades, offering more flexibility but requiring careful management.</p>
+<h3 id="3-3-Diamond-EIP-2535"><a href="#3-3-Diamond-EIP-2535" class="headerlink" title="3.3 Diamond(EIP-2535)"></a>3.3 Diamond(EIP-2535)</h3><p>Allowing for more complex upgradeable contracts, specifically those with multiple facets, each containing different functions. This pattern is highly flexible and allows contracts to scale without becoming monolithic.</p>
+<hr>
+<h3 id="Comparison-Table"><a href="#Comparison-Table" class="headerlink" title="Comparison Table:"></a>Comparison Table:</h3><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Transparent Proxy</th>
+<th>UUPS</th>
+<th>Diamond (EIP-2535)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Upgrade Control</strong></td>
+<td>Separate <code>ProxyAdmin</code> contract</td>
+<td>Managed by implementation</td>
+<td>Managed by facets</td>
+</tr>
+<tr>
+<td><strong>Gas Efficiency</strong></td>
+<td>More expensive (extra contract)</td>
+<td>More gas-efficient</td>
+<td>Potentially higher due to complexity</td>
+</tr>
+<tr>
+<td><strong>Modularity</strong></td>
+<td>Limited</td>
+<td>Limited</td>
+<td>Highly modular</td>
+</tr>
+<tr>
+<td><strong>Admin Management</strong></td>
+<td>Proxy admin vs user roles</td>
+<td>Admin is in charge of upgrades</td>
+<td>More complex admin control</td>
+</tr>
+<tr>
+<td><strong>Upgradeability Granularity</strong></td>
+<td>Entire implementation contract</td>
+<td>Entire implementation contract</td>
+<td>Upgrade individual facets</td>
+</tr>
+<tr>
+<td><strong>Complexity</strong></td>
+<td>Medium</td>
+<td>Low</td>
+<td>High</td>
+</tr>
+<tr>
+<td><strong>Best Use Case</strong></td>
+<td>DeFi, stable projects</td>
+<td>Small apps or simple systems</td>
+<td>Large modular platforms</td>
+</tr>
+</tbody></table>
+<h3 id="Choosing-Between-Transparent-Proxy-UUPS-and-Diamond"><a href="#Choosing-Between-Transparent-Proxy-UUPS-and-Diamond" class="headerlink" title="Choosing Between Transparent Proxy, UUPS, and Diamond"></a>Choosing Between Transparent Proxy, UUPS, and Diamond</h3><ol>
+<li><p><strong>Transparent Proxy</strong>:</p>
+<ul>
+<li>Best for established systems that need clear separation between users and admin.</li>
+<li>Most widely used, considered more secure and tested, but a bit more complex.</li>
+<li>Suitable for DeFi protocols or projects with high stakes and security needs.</li>
+</ul>
+</li>
+<li><p><strong>UUPS</strong>:</p>
+<ul>
+<li>Ideal for lightweight contracts or simpler systems where ease of use and efficiency is more important.</li>
+<li>You still have upgradeability without the overhead of managing a separate <code>ProxyAdmin</code> contract.</li>
+</ul>
+</li>
+<li><p><strong>Diamond (EIP-2535)</strong>:</p>
+<ul>
+<li>Perfect for complex, modular systems that need to scale. If you’re building a platform that will continuously evolve with new features, Diamond’s facet-based architecture offers significant flexibility.</li>
+<li>Adds complexity but provides long-term benefits in terms of modular upgrades.</li>
+</ul>
+</li>
+</ol>
+<p>Each upgrade pattern has its strengths, and the best choice depends on the complexity, gas efficiency, and upgrade requirements of your project.</p>
+<h2 id="3-One-more-thing-about-Storage-slot"><a href="#3-One-more-thing-about-Storage-slot" class="headerlink" title="3. One more thing about Storage slot"></a>3. One more thing about Storage slot</h2><h3 id="Modular-storage"><a href="#Modular-storage" class="headerlink" title="Modular storage"></a>Modular storage</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.24;</span><br><span class="line"></span><br><span class="line">struct AppStorage &#123;</span><br><span class="line">    uint256 a;</span><br><span class="line">    uint8 b;</span><br><span class="line">    uint8 c;</span><br><span class="line">    uint8 d;</span><br><span class="line">    address contractA;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">library Storage &#123;</span><br><span class="line">    bytes32 constant KEY = keccak256(&quot;storage-local&quot;);</span><br><span class="line"></span><br><span class="line">    function get() internal pure returns (AppStorage storage s) &#123;</span><br><span class="line">        bytes32 loc = KEY;</span><br><span class="line">        assembly &#123;</span><br><span class="line">            s.slot := loc</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This allows the storage layout to be shared across different facets or functions, avoiding conflicts between different components.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/16/Solidity-lesson3.3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1540,7 +1773,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
