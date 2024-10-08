@@ -229,6 +229,184 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/10/Solidity-lesson2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/09/10/Solidity-lesson2/" itemprop="url">Solidity Lesson 2 - Introduction of Testing and Deployment</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-10T22:07:32+08:00">
+                2024-09-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Target-Get-familiar-with-hardhat-testing-and-deployment"><a href="#Target-Get-familiar-with-hardhat-testing-and-deployment" class="headerlink" title="Target: Get familiar with hardhat testing and deployment"></a>Target: Get familiar with hardhat testing and deployment</h1><h2 id="1-Set-up-typescript"><a href="#1-Set-up-typescript" class="headerlink" title="1. Set up typescript"></a>1. Set up typescript</h2><p>We are going to use typescript for its popularity and readability in this whole course.</p>
+<ul>
+<li><p>Let’s install it first:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D ts-node typescript</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Creating the typescript version of config file</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;@nomicfoundation/hardhat-toolbox&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;@nomicfoundation/hardhat-ethers&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> <span class="title class_">Config</span> = <span class="keyword">import</span>(<span class="string">&quot;hardhat/config&quot;</span>).<span class="property">HardhatUserConfig</span>;</span><br><span class="line"><span class="comment">/** <span class="doctag">@type</span> import(&#x27;hardhat/config&#x27;).HardhatUserConfig */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">config</span>: <span class="title class_">Config</span> = &#123;</span><br><span class="line">  <span class="attr">solidity</span>: <span class="string">&quot;0.8.24&quot;</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> config;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Finally, Adding a empty json file ‘tsconfig.json’ under project root, otherwise there will be an error during the typescript execution:</p>
+<p><code>error TS5109: Option &#39;moduleResolution&#39; must be set to &#39;NodeNext&#39; (or left unspecified) when option &#39;module&#39; is set to &#39;NodeNext&#39;.</code></p>
+</li>
+</ul>
+<h2 id="2-Testing"><a href="#2-Testing" class="headerlink" title="2. Testing"></a>2. Testing</h2><ol>
+<li><p>Install ‘mocha’:<br><code>yarn add -D @types/mocha</code></p>
+</li>
+<li><p>create test file under ‘test’ folder</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;@nomicfoundation/hardhat-ethers&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; expect &#125; <span class="keyword">from</span> <span class="string">&quot;chai&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">describe</span>(<span class="string">&quot;HelloWorld&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="title function_">it</span>(<span class="string">&quot;should say hello&quot;</span>, <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="title class_">HelloWorld</span> = <span class="keyword">await</span> ethers.<span class="title function_">getContractFactory</span>(<span class="string">&quot;HelloWorld&quot;</span>);</span><br><span class="line">    <span class="keyword">const</span> helloWorld = <span class="keyword">await</span> <span class="title class_">HelloWorld</span>.<span class="title function_">deploy</span>();</span><br><span class="line">    <span class="keyword">await</span> helloWorld.<span class="title function_">waitForDeployment</span>();</span><br><span class="line"></span><br><span class="line">    <span class="title function_">expect</span>(<span class="keyword">await</span> helloWorld.<span class="title function_">hello</span>()).<span class="property">to</span>.<span class="title function_">equal</span>(<span class="string">&quot;hello world!&quot;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>ethers.getContractFactory(&quot;HelloWorld&quot;)</code>: This retrieves a “contract factory” for the HelloWorld contract. A contract factory is an abstraction that makes it easier to deploy new instances of the contract.</li>
+<li><code>HelloWorld.deploy()</code>: Deploys the contract to the blockchain.</li>
+<li><code>await helloWorld.waitForDeployment()</code>: Waits until the deployment transaction is confirmed.</li>
+</ul>
+</li>
+<li><p>run the test</p>
+<p><code> yarn hart test</code></p>
+</li>
+</ol>
+<h2 id="3-Deployment"><a href="#3-Deployment" class="headerlink" title="3. Deployment"></a>3. Deployment</h2><ol>
+<li><p>create deployment script under ‘scripts’ folder</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;@nomicfoundation/hardhat-ethers&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">deploy</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> <span class="title class_">HelloWorld</span> = <span class="keyword">await</span> ethers.<span class="title function_">getContractFactory</span>(<span class="string">&quot;HelloWorld&quot;</span>);</span><br><span class="line">  <span class="keyword">const</span> helloWorld = <span class="keyword">await</span> <span class="title class_">HelloWorld</span>.<span class="title function_">deploy</span>();</span><br><span class="line">  <span class="keyword">await</span> helloWorld.<span class="title function_">waitForDeployment</span>();</span><br><span class="line">  <span class="keyword">return</span> helloWorld;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">sayHello</span>(<span class="params"><span class="attr">hello</span>: <span class="built_in">any</span></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">await</span> hello.<span class="title function_">hello</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">deploy</span>().<span class="title function_">then</span>(sayHello);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>ethers.getContractFactory(&quot;HelloWorld&quot;)</code>:<ul>
+<li>This retrieves a ContractFactory object for the HelloWorld contract, which is a wrapper around the compiled contract. A ContractFactory is an abstraction used to deploy new smart contracts.</li>
+<li>The “HelloWorld” string references the contract by its name. Hardhat uses the contract’s ABI (Application Binary Interface) and bytecode (compiled form) to create this factory.</li>
+</ul>
+</li>
+<li><code>HelloWorld.deploy()</code>:<ul>
+<li>This function call initiates the deployment of the HelloWorld contract onto the blockchain. It broadcasts a transaction to the Ethereum network (or a local development network in the case of Hardhat), which contains the bytecode of the smart contract.</li>
+<li>Once the contract is deployed, you get an instance of the contract (helloWorld), which represents the deployed contract on-chain(included in the mem-pool).</li>
+</ul>
+</li>
+<li><code>await helloWorld.waitForDeployment();</code>:<ul>
+<li>This waits for the contract deployment transaction to be mined and included in a block. After that, the helloWorld object will be fully initialized and ready to interact with.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>start a local EVM environment</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat node</span><br></pre></td></tr></table></figure></li>
+<li><p>execute the deployment script to publish contracts to the test net</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat run ./scripts/deploy-hello.ts --network localhost</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="4-Further-reading"><a href="#4-Further-reading" class="headerlink" title="4. Further reading"></a>4. Further reading</h2><ul>
+<li><strong>Hardhat</strong>: The core development environment that runs your project, manages tasks, and handles things like contract compilation, running tests, and connecting to networks.</li>
+<li><strong>@nomicfoundation&#x2F;hardhat-ethers</strong>: A plugin that enhances Hardhat by adding ethers.js functionalities, allowing you to interact with Ethereum in a simple, pre-configured way.</li>
+<li><strong>ethers</strong>: A customized version of ethers that is tightly integrated with Hardhat, not directly from the original ethers.js library.</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/10/hexo-deployment-issue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -783,7 +961,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
