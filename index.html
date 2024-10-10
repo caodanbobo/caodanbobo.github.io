@@ -229,6 +229,169 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/09/rust-0304-enum/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/10/09/rust-0304-enum/" itemprop="url">Rust lesson 3.4 - Enum</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-09T20:28:32+08:00">
+                2024-10-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Enum"><a href="#Enum" class="headerlink" title="Enum"></a>Enum</h1><h2 id="1-Defining-an-Enum"><a href="#1-Defining-an-Enum" class="headerlink" title="1. Defining an Enum"></a>1. Defining an Enum</h2><p>Enum allows you to define a set of values.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">Message</span> &#123;</span><br><span class="line">    Quit,</span><br><span class="line">    Move &#123; x: <span class="type">i32</span>, y: <span class="type">i32</span> &#125;, <span class="comment">// like a struct</span></span><br><span class="line">    <span class="title function_ invoke__">Write</span>(<span class="type">String</span>), <span class="comment">// string</span></span><br><span class="line">    <span class="title function_ invoke__">ChangeColor</span>(<span class="type">i32</span>, <span class="type">i32</span>, <span class="type">i32</span>), <span class="comment">//tuple</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Memory-layout-of-enums"><a href="#Memory-layout-of-enums" class="headerlink" title="Memory layout of enums"></a>Memory layout of enums</h2><ol>
+<li>Discriminant(1 byte*):<ul>
+<li>Rust stores a discriminant for each enum. This is an integer representing which variant is currently active.(Quit: 0, Move: 1…)</li>
+<li>By default, Rust uses a u8 for the discriminant, as long as the enum has fewer than 256 variants.</li>
+</ul>
+</li>
+<li>Variants<ul>
+<li>this is the size of the variant’s value, e.g., Move havs two i32 values, each of which is 4bytes, 8bytes in total.</li>
+<li>However, Rust will align the enum to the size of its largest variant for efficient access.</li>
+</ul>
+</li>
+</ol>
+<p>In Rust, the size of an enum is typically determined by its largest variant. For example, consider an enum <code>Message</code> that includes variants such as <code>Write</code>, <code>Quit</code>, and <code>Move</code>.</p>
+<ul>
+<li>The <code>Write</code> variant might consist of a discriminant (usually 1 byte) and a <code>String</code> (which may vary in size, but let’s assume it uses 24 bytes for this explanation). Therefore, theoretically, the size of <code>Message</code> could be expected to be 25 bytes.</li>
+</ul>
+<p><strong>However</strong>, in practice, Rust uses a technique known as <strong>niche optimization</strong>. This means that if some of the variants are small or can share memory efficiently, the Rust compiler can optimize the size of the enum.</p>
+<p>For instance, because the <code>Quit</code> and <code>Move</code> variants are small and can be represented with fewer bits, the actual size of the <code>Message</code> enum may be reduced to 24 bytes instead of the expected 25. This optimization allows Rust to pack these variants more efficiently in memory, thus saving space.</p>
+<p>The size of a String</p>
+<ul>
+<li>a pointer:8 bytes on a 64-bit system</li>
+<li>length: 8 bytes</li>
+<li>capacity: 8 bytes</li>
+</ul>
+<h2 id="2-Option-and-Result"><a href="#2-Option-and-Result" class="headerlink" title="2. Option and Result"></a>2. Option and Result</h2><p>They enums defined by the standard library.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">Option</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="literal">None</span>,</span><br><span class="line">    <span class="title function_ invoke__">Some</span>(T),</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">Result</span>&lt;T, E&gt; &#123;</span><br><span class="line">    <span class="title function_ invoke__">Ok</span>(T),</span><br><span class="line">    <span class="title function_ invoke__">Err</span>(E),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-match-Control-Flow"><a href="#3-match-Control-Flow" class="headerlink" title="3. match Control Flow"></a>3. match Control Flow</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">Coin</span> &#123;</span><br><span class="line">    Penny,</span><br><span class="line">    Nickel,</span><br><span class="line">    Dime,</span><br><span class="line">    Quarter,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">value_in_cents</span>(coin: Coin) <span class="punctuation">-&gt;</span> <span class="type">u8</span> &#123;</span><br><span class="line">    <span class="keyword">match</span> coin &#123;</span><br><span class="line">        Coin::Penny =&gt; <span class="number">1</span>,</span><br><span class="line">        Coin::Nickel =&gt; <span class="number">5</span>,</span><br><span class="line">        Coin::Dime =&gt; <span class="number">10</span>,</span><br><span class="line">        Coin::Quarter =&gt; <span class="number">25</span>,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>There are some important feature of match:</p>
+<ul>
+<li>Catch-all pattern: the match arms need to cover all possible value, if we don’s want to list all: we can use special pattern:<ul>
+<li><code>other</code>: match other possible value</li>
+<li><code>-</code>: match any value</li>
+</ul>
+</li>
+<li><code>match</code> is also a expression, can be used to value assignment</li>
+<li><code>match</code> can be used with non-enum types asl well</li>
+</ul>
+<h2 id="4-if-let"><a href="#4-if-let" class="headerlink" title="4. if let"></a>4. <code>if let</code></h2><p>A concise version of <code>match</code></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//using match</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">count</span> = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">match</span> coin &#123;</span><br><span class="line">    Coin::<span class="title function_ invoke__">Quarter</span>(state) =&gt; <span class="built_in">println!</span>(<span class="string">&quot;State quarter from &#123;state:?&#125;!&quot;</span>),</span><br><span class="line">    _ =&gt; count += <span class="number">1</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//using if let</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">count</span> = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> <span class="variable">Coin</span>::<span class="title function_ invoke__">Quarter</span>(state) = coin &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;State quarter from &#123;state:?&#125;!&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    count += <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/08/rust-0303-functions/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1664,160 +1827,6 @@ This command creates an executable file in target&#x2F;debug&#x2F;hello_cargo, s
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/12/Solidity-lesson3.1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/09/12/Solidity-lesson3.1/" itemprop="url">Solidity Lesson 3.1 - Connecting to Metamask</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-12T20:45:37+08:00">
-                2024-09-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Target-Interact-with-deployed-contracts-using-Metamask"><a href="#Target-Interact-with-deployed-contracts-using-Metamask" class="headerlink" title="Target: Interact with deployed contracts using Metamask"></a>Target: Interact with deployed contracts using Metamask</h1><h2 id="1-Set-up-webpack"><a href="#1-Set-up-webpack" class="headerlink" title="1. Set up webpack"></a>1. Set up webpack</h2><ul>
-<li><p>Create webpack.common.js under project root</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> dotenv = <span class="built_in">require</span>(<span class="string">&quot;dotenv&quot;</span>);</span><br><span class="line">dotenv.<span class="title function_">config</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&quot;path&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">HtmlWebpackPlugin</span> = <span class="built_in">require</span>(<span class="string">&quot;html-webpack-plugin&quot;</span>);</span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">entry</span>: <span class="string">&quot;./src/index.ts&quot;</span>, <span class="comment">// bundle&quot;s entry point</span></span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">path</span>: path.<span class="title function_">resolve</span>(__dirname, <span class="string">&quot;dist&quot;</span>), <span class="comment">// output directory</span></span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&quot;[name].js&quot;</span>, <span class="comment">// name of the generated bundle</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">resolve</span>: &#123;</span><br><span class="line">    <span class="attr">extensions</span>: [<span class="string">&quot;.js&quot;</span>, <span class="string">&quot;.ts&quot;</span>, <span class="string">&quot;.json&quot;</span>],</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">HtmlWebpackPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">template</span>: <span class="string">&quot;./src/index.html&quot;</span>,</span><br><span class="line">      <span class="attr">inject</span>: <span class="string">&quot;body&quot;</span>,</span><br><span class="line">    &#125;),</span><br><span class="line">  ],</span><br><span class="line"></span><br><span class="line">  <span class="attr">module</span>: &#123;</span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.ts$/</span>,</span><br><span class="line">        <span class="attr">loader</span>: <span class="string">&quot;ts-loader&quot;</span>,</span><br><span class="line">        <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</span><br><span class="line">      &#125;,</span><br><span class="line"></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.css$/i</span>,</span><br><span class="line">        <span class="attr">use</span>: [<span class="string">&quot;style-loader&quot;</span>, <span class="string">&quot;css-loader&quot;</span>],</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Adding webpack dependencies:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D webpack webpack-cli ts-loader html-webpack-plugin dotenv webpack-dev-server</span><br></pre></td></tr></table></figure></li>
-<li><p>tsconfig.json</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;compilerOptions&quot;: &#123;</span><br><span class="line">        &quot;resolveJsonModule&quot;: true,</span><br><span class="line">        &quot;esModuleInterop&quot;: true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="2-Interaction-using-Metamask"><a href="#2-Interaction-using-Metamask" class="headerlink" title="2. Interaction using Metamask"></a>2. Interaction using Metamask</h2><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;ethers&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getEth</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// @ts-ignore</span></span><br><span class="line">  <span class="keyword">const</span> eth = <span class="variable language_">window</span>.<span class="property">ethereum</span>;</span><br><span class="line">  <span class="keyword">if</span> (!eth) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;No ethereum provider found&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> eth;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">requestAccess</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> eth = <span class="title function_">getEth</span>();</span><br><span class="line">  <span class="keyword">const</span> result = (<span class="keyword">await</span> eth.<span class="title function_">request</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>: <span class="string">&quot;eth_requestAccounts&quot;</span>,</span><br><span class="line">  &#125;)) <span class="keyword">as</span> <span class="built_in">string</span>[];</span><br><span class="line">  <span class="keyword">return</span> result &amp;&amp; result.<span class="property">length</span> &gt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">hasSigners</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> metamask = <span class="title function_">getEth</span>();</span><br><span class="line">  <span class="keyword">const</span> signers = (<span class="keyword">await</span> metamask.<span class="title function_">request</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>: <span class="string">&quot;eth_accounts&quot;</span>,</span><br><span class="line">  &#125;)) <span class="keyword">as</span> <span class="built_in">string</span>[];</span><br><span class="line">  <span class="keyword">return</span> signers.<span class="property">length</span> &gt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">getContract</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 1. 地址</span></span><br><span class="line">  <span class="comment">// 2. 方法名</span></span><br><span class="line">  <span class="comment">// 3. provider</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!(<span class="keyword">await</span> <span class="title function_">hasSigners</span>()) &amp;&amp; !(<span class="keyword">await</span> <span class="title function_">requestAccess</span>())) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;No ethereum provider found&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> provider = <span class="keyword">new</span> ethers.<span class="title class_">AbstractProvider</span>(<span class="title function_">getEth</span>());</span><br><span class="line">  <span class="keyword">const</span> address = process.<span class="property">env</span>.<span class="property">CONTRACT_ADDRESS</span>;</span><br><span class="line">  <span class="keyword">const</span> contract = <span class="keyword">new</span> ethers.<span class="title class_">Contract</span>(</span><br><span class="line">    address,</span><br><span class="line">    [<span class="string">&quot;function hello() pure public returns (string memory)&quot;</span>],</span><br><span class="line">    provider</span><br><span class="line">  );</span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">innerHTML</span> = <span class="keyword">await</span> contract.<span class="title function_">hello</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">main</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">getContract</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">main</span>();</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>getEth():<ul>
-<li>window.ethereum is the provider injected by Ethereum wallets</li>
-</ul>
-</li>
-<li>requestAccess()<ul>
-<li><code>eth_requestAccounts</code> this command would prompt the user to grant permission for this website to access their Metamask acconts and return.</li>
-<li>if the user has already granted permission, this will not trigger the prompt.</li>
-</ul>
-</li>
-<li>hasSigners()<ul>
-<li><code>eth_accounts</code> returns currently connected accounts.</li>
-</ul>
-</li>
-<li><code>const contract = new ethers.Contract(address, abi, providerOrSigner);</code><ul>
-<li>ethers.Contract() creates an instance of a deployed contract, allowing you to interact with it by calling its functions (read&#x2F;write) and listening for events.</li>
-<li>Parameters:<ul>
-<li>ABI: we are using human-readable ABI in the code above</li>
-<li>Provider or Signer: Provider (for read-only operations) or a Signer (for sending transactions from a specific Ethereum account)</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1868,7 +1877,7 @@ This command creates an executable file in target&#x2F;debug&#x2F;hello_cargo, s
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

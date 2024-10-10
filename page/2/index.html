@@ -229,6 +229,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/12/Solidity-lesson3.1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/09/12/Solidity-lesson3.1/" itemprop="url">Solidity Lesson 3.1 - Connecting to Metamask</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-12T20:45:37+08:00">
+                2024-09-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Target-Interact-with-deployed-contracts-using-Metamask"><a href="#Target-Interact-with-deployed-contracts-using-Metamask" class="headerlink" title="Target: Interact with deployed contracts using Metamask"></a>Target: Interact with deployed contracts using Metamask</h1><h2 id="1-Set-up-webpack"><a href="#1-Set-up-webpack" class="headerlink" title="1. Set up webpack"></a>1. Set up webpack</h2><ul>
+<li><p>Create webpack.common.js under project root</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> dotenv = <span class="built_in">require</span>(<span class="string">&quot;dotenv&quot;</span>);</span><br><span class="line">dotenv.<span class="title function_">config</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&quot;path&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">HtmlWebpackPlugin</span> = <span class="built_in">require</span>(<span class="string">&quot;html-webpack-plugin&quot;</span>);</span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">entry</span>: <span class="string">&quot;./src/index.ts&quot;</span>, <span class="comment">// bundle&quot;s entry point</span></span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">path</span>: path.<span class="title function_">resolve</span>(__dirname, <span class="string">&quot;dist&quot;</span>), <span class="comment">// output directory</span></span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&quot;[name].js&quot;</span>, <span class="comment">// name of the generated bundle</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">resolve</span>: &#123;</span><br><span class="line">    <span class="attr">extensions</span>: [<span class="string">&quot;.js&quot;</span>, <span class="string">&quot;.ts&quot;</span>, <span class="string">&quot;.json&quot;</span>],</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">HtmlWebpackPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">template</span>: <span class="string">&quot;./src/index.html&quot;</span>,</span><br><span class="line">      <span class="attr">inject</span>: <span class="string">&quot;body&quot;</span>,</span><br><span class="line">    &#125;),</span><br><span class="line">  ],</span><br><span class="line"></span><br><span class="line">  <span class="attr">module</span>: &#123;</span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.ts$/</span>,</span><br><span class="line">        <span class="attr">loader</span>: <span class="string">&quot;ts-loader&quot;</span>,</span><br><span class="line">        <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</span><br><span class="line">      &#125;,</span><br><span class="line"></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.css$/i</span>,</span><br><span class="line">        <span class="attr">use</span>: [<span class="string">&quot;style-loader&quot;</span>, <span class="string">&quot;css-loader&quot;</span>],</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Adding webpack dependencies:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D webpack webpack-cli ts-loader html-webpack-plugin dotenv webpack-dev-server</span><br></pre></td></tr></table></figure></li>
+<li><p>tsconfig.json</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;compilerOptions&quot;: &#123;</span><br><span class="line">        &quot;resolveJsonModule&quot;: true,</span><br><span class="line">        &quot;esModuleInterop&quot;: true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="2-Interaction-using-Metamask"><a href="#2-Interaction-using-Metamask" class="headerlink" title="2. Interaction using Metamask"></a>2. Interaction using Metamask</h2><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;ethers&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getEth</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// @ts-ignore</span></span><br><span class="line">  <span class="keyword">const</span> eth = <span class="variable language_">window</span>.<span class="property">ethereum</span>;</span><br><span class="line">  <span class="keyword">if</span> (!eth) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;No ethereum provider found&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> eth;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">requestAccess</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> eth = <span class="title function_">getEth</span>();</span><br><span class="line">  <span class="keyword">const</span> result = (<span class="keyword">await</span> eth.<span class="title function_">request</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>: <span class="string">&quot;eth_requestAccounts&quot;</span>,</span><br><span class="line">  &#125;)) <span class="keyword">as</span> <span class="built_in">string</span>[];</span><br><span class="line">  <span class="keyword">return</span> result &amp;&amp; result.<span class="property">length</span> &gt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">hasSigners</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> metamask = <span class="title function_">getEth</span>();</span><br><span class="line">  <span class="keyword">const</span> signers = (<span class="keyword">await</span> metamask.<span class="title function_">request</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>: <span class="string">&quot;eth_accounts&quot;</span>,</span><br><span class="line">  &#125;)) <span class="keyword">as</span> <span class="built_in">string</span>[];</span><br><span class="line">  <span class="keyword">return</span> signers.<span class="property">length</span> &gt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">getContract</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 1. 地址</span></span><br><span class="line">  <span class="comment">// 2. 方法名</span></span><br><span class="line">  <span class="comment">// 3. provider</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!(<span class="keyword">await</span> <span class="title function_">hasSigners</span>()) &amp;&amp; !(<span class="keyword">await</span> <span class="title function_">requestAccess</span>())) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;No ethereum provider found&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> provider = <span class="keyword">new</span> ethers.<span class="title class_">AbstractProvider</span>(<span class="title function_">getEth</span>());</span><br><span class="line">  <span class="keyword">const</span> address = process.<span class="property">env</span>.<span class="property">CONTRACT_ADDRESS</span>;</span><br><span class="line">  <span class="keyword">const</span> contract = <span class="keyword">new</span> ethers.<span class="title class_">Contract</span>(</span><br><span class="line">    address,</span><br><span class="line">    [<span class="string">&quot;function hello() pure public returns (string memory)&quot;</span>],</span><br><span class="line">    provider</span><br><span class="line">  );</span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">innerHTML</span> = <span class="keyword">await</span> contract.<span class="title function_">hello</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">main</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">getContract</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">main</span>();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>getEth():<ul>
+<li>window.ethereum is the provider injected by Ethereum wallets</li>
+</ul>
+</li>
+<li>requestAccess()<ul>
+<li><code>eth_requestAccounts</code> this command would prompt the user to grant permission for this website to access their Metamask acconts and return.</li>
+<li>if the user has already granted permission, this will not trigger the prompt.</li>
+</ul>
+</li>
+<li>hasSigners()<ul>
+<li><code>eth_accounts</code> returns currently connected accounts.</li>
+</ul>
+</li>
+<li><code>const contract = new ethers.Contract(address, abi, providerOrSigner);</code><ul>
+<li>ethers.Contract() creates an instance of a deployed contract, allowing you to interact with it by calling its functions (read&#x2F;write) and listening for events.</li>
+<li>Parameters:<ul>
+<li>ABI: we are using human-readable ABI in the code above</li>
+<li>Provider or Signer: Provider (for read-only operations) or a Signer (for sending transactions from a specific Ethereum account)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/10/Solidity-lesson2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -961,7 +1115,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
