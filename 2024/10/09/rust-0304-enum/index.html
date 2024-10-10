@@ -79,15 +79,15 @@
 
 
 
-<meta name="description" content="Enum1. Defining an EnumEnum allows you to define a set of values. 123456enum Message &#123;    Quit,    Move &#123; x: i32, y: i32 &#125;, &#x2F;&#x2F; like a struct    Write(String), &#x2F;&#x2F; string    ChangeColor(i">
+<meta name="description" content="Enum 1011. Defining an EnumEnum allows you to define a set of values. 123456enum Message &#123;    Quit,    Move &#123; x: i32, y: i32 &#125;, &#x2F;&#x2F; like a struct    Write(String), &#x2F;&#x2F; string    ChangeCol">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Rust lesson 3.4 - Enum">
 <meta property="og:url" content="http://example.com/2024/10/09/rust-0304-enum/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Enum1. Defining an EnumEnum allows you to define a set of values. 123456enum Message &#123;    Quit,    Move &#123; x: i32, y: i32 &#125;, &#x2F;&#x2F; like a struct    Write(String), &#x2F;&#x2F; string    ChangeColor(i">
+<meta property="og:description" content="Enum 1011. Defining an EnumEnum allows you to define a set of values. 123456enum Message &#123;    Quit,    Move &#123; x: i32, y: i32 &#125;, &#x2F;&#x2F; like a struct    Write(String), &#x2F;&#x2F; string    ChangeCol">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-10-09T12:28:32.622Z">
-<meta property="article:modified_time" content="2024-10-10T13:48:15.001Z">
+<meta property="article:modified_time" content="2024-10-10T13:50:16.165Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 
@@ -299,7 +299,7 @@
       
 
       
-        <h1 id="Enum"><a href="#Enum" class="headerlink" title="Enum"></a>Enum</h1><h2 id="1-Defining-an-Enum"><a href="#1-Defining-an-Enum" class="headerlink" title="1. Defining an Enum"></a>1. Defining an Enum</h2><p>Enum allows you to define a set of values.</p>
+        <h1 id="Enum-101"><a href="#Enum-101" class="headerlink" title="Enum 101"></a>Enum 101</h1><h2 id="1-Defining-an-Enum"><a href="#1-Defining-an-Enum" class="headerlink" title="1. Defining an Enum"></a>1. Defining an Enum</h2><p>Enum allows you to define a set of values.</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">Message</span> &#123;</span><br><span class="line">    Quit,</span><br><span class="line">    Move &#123; x: <span class="type">i32</span>, y: <span class="type">i32</span> &#125;, <span class="comment">// like a struct</span></span><br><span class="line">    <span class="title function_ invoke__">Write</span>(<span class="type">String</span>), <span class="comment">// string</span></span><br><span class="line">    <span class="title function_ invoke__">ChangeColor</span>(<span class="type">i32</span>, <span class="type">i32</span>, <span class="type">i32</span>), <span class="comment">// tuple</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="Memory-layout-of-enums"><a href="#Memory-layout-of-enums" class="headerlink" title="Memory layout of enums"></a>Memory layout of enums</h2><ol>
@@ -377,6 +377,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2024/10/10/rust-0305-enum2/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -452,7 +456,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -489,7 +493,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Enum"><span class="nav-number">1.</span> <span class="nav-text">Enum</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Defining-an-Enum"><span class="nav-number">1.1.</span> <span class="nav-text">1. Defining an Enum</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Memory-layout-of-enums"><span class="nav-number">1.2.</span> <span class="nav-text">Memory layout of enums</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Option-and-Result"><span class="nav-number">1.3.</span> <span class="nav-text">2. Option and Result</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-match-Control-Flow"><span class="nav-number">1.4.</span> <span class="nav-text">3. match Control Flow</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-if-let"><span class="nav-number">1.5.</span> <span class="nav-text">4. if let</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Enum-101"><span class="nav-number">1.</span> <span class="nav-text">Enum 101</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Defining-an-Enum"><span class="nav-number">1.1.</span> <span class="nav-text">1. Defining an Enum</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Memory-layout-of-enums"><span class="nav-number">1.2.</span> <span class="nav-text">Memory layout of enums</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Option-and-Result"><span class="nav-number">1.3.</span> <span class="nav-text">2. Option and Result</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-match-Control-Flow"><span class="nav-number">1.4.</span> <span class="nav-text">3. match Control Flow</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-if-let"><span class="nav-number">1.5.</span> <span class="nav-text">4. if let</span></a></li></ol></li></ol></div>
             
 
           </div>
