@@ -229,125 +229,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/10/rust-0306-mod/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/10/10/rust-0306-mod/" itemprop="url">Untitled</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-10T21:51:03+08:00">
-                2024-10-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/10/rust-0305-enum2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1824,6 +1705,159 @@ This command creates an executable file in target&#x2F;debug&#x2F;hello_cargo, s
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/15/Solidity-lesson3.2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/09/15/Solidity-lesson3.2/" itemprop="url">Solidity Lesson 3.2 - Connecting to Metamask II</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-15T10:41:34+08:00">
+                2024-09-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Target-Learn-how-to-send-transactions-write-to-chain"><a href="#Target-Learn-how-to-send-transactions-write-to-chain" class="headerlink" title="Target: Learn how to send transactions (write to chain)"></a>Target: Learn how to send transactions (write to chain)</h1><h2 id="1-Issues-I-encountered"><a href="#1-Issues-I-encountered" class="headerlink" title="1. Issues I encountered"></a>1. Issues I encountered</h2><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;ethers&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getEth</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// @ts-ignore</span></span><br><span class="line">  <span class="keyword">const</span> eth = <span class="variable language_">window</span>.<span class="property">ethereum</span>;</span><br><span class="line">  <span class="keyword">if</span> (!eth) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;No ethereum provider found&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> eth;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//prompt for permission if no connected accounts</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">requestAccess</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> eth = <span class="title function_">getEth</span>();</span><br><span class="line">  <span class="keyword">const</span> result = (<span class="keyword">await</span> eth.<span class="title function_">request</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>: <span class="string">&quot;eth_requestAccounts&quot;</span>,</span><br><span class="line">  &#125;)) <span class="keyword">as</span> <span class="built_in">string</span>[];</span><br><span class="line">  <span class="keyword">return</span> result &amp;&amp; result.<span class="property">length</span> &gt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//return connected accounts</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">hasSigners</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> metamask = <span class="title function_">getEth</span>();</span><br><span class="line">  <span class="keyword">const</span> signers = (<span class="keyword">await</span> metamask.<span class="title function_">request</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>: <span class="string">&quot;eth_accounts&quot;</span>,</span><br><span class="line">  &#125;)) <span class="keyword">as</span> <span class="built_in">string</span>[];</span><br><span class="line">  <span class="keyword">return</span> signers.<span class="property">length</span> &gt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">getContract</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 1. 地址</span></span><br><span class="line">  <span class="comment">// 2. 方法名</span></span><br><span class="line">  <span class="comment">// 3. provider</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!(<span class="keyword">await</span> <span class="title function_">hasSigners</span>()) &amp;&amp; !(<span class="keyword">await</span> <span class="title function_">requestAccess</span>())) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;No ethereum provider found&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> provider = <span class="keyword">new</span> ethers.<span class="title class_">BrowserProvider</span>(<span class="title function_">getEth</span>());</span><br><span class="line">  <span class="keyword">const</span> address = process.<span class="property">env</span>.<span class="property">CONTRACT_ADDRESS</span>;</span><br><span class="line">  <span class="keyword">const</span> contract = <span class="keyword">new</span> ethers.<span class="title class_">Contract</span>(</span><br><span class="line">    address,</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&quot;function getCount() public view returns (uint256)&quot;</span>,</span><br><span class="line">      <span class="string">&quot;function count() public&quot;</span>,</span><br><span class="line">    ],</span><br><span class="line">    <span class="keyword">await</span> provider.<span class="title function_">getSigner</span>() <span class="comment">//provider or signer</span></span><br><span class="line">  );</span><br><span class="line">  <span class="comment">//debug</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(contract);</span><br><span class="line">  <span class="comment">//interaction with contract</span></span><br><span class="line">  <span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">getCount</span>(<span class="params"></span>) &#123;</span><br><span class="line">    counter.<span class="property">innerHTML</span> = <span class="keyword">await</span> contract.<span class="title function_">getCount</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">incremnet</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> tx = <span class="keyword">await</span> contract.<span class="title function_">count</span>();</span><br><span class="line">    <span class="keyword">await</span> tx.<span class="title function_">wait</span>();</span><br><span class="line">    <span class="title function_">getCount</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//setup html</span></span><br><span class="line">  <span class="keyword">const</span> counter = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;div&quot;</span>);</span><br><span class="line">  <span class="keyword">const</span> btn = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;button&quot;</span>);</span><br><span class="line">  btn.<span class="property">innerHTML</span> = <span class="string">&quot;increment&quot;</span>;</span><br><span class="line"></span><br><span class="line">  btn.<span class="property">onclick</span> = <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">incremnet</span>();</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(counter);</span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(btn);</span><br><span class="line">  <span class="comment">//display count when page refreshing</span></span><br><span class="line">  <span class="title function_">getCount</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">main</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">getContract</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">main</span>();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>contract.count is not a function</code></p>
+<p>Cause: a redundant white space when copying the function signature to the abi part.</p>
+</li>
+<li><p><code>Nonce too high. Expected nonce to be 2 but got 9. Note that transactions can&#39;t be queued when automining.</code></p>
+<p>Cause: Metamask cache, by clearing it will fix this.</p>
+</li>
+</ul>
+<h2 id="2-Event-listener"><a href="#2-Event-listener" class="headerlink" title="2. Event listener"></a>2. Event listener</h2><p>Contract:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.24;</span><br><span class="line"></span><br><span class="line">contract Counter &#123;</span><br><span class="line">    event countIncremented(address indexed user, uint256 count);</span><br><span class="line"></span><br><span class="line">    uint256 private s_counter;</span><br><span class="line"></span><br><span class="line">    function count() public &#123;</span><br><span class="line">        s_counter++;</span><br><span class="line">        emit countIncremented(msg.sender, s_counter);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function getCount() public view returns (uint256) &#123;</span><br><span class="line">        return s_counter;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>index.ts:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;ethers&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; abi &#125; <span class="keyword">from</span> <span class="string">&quot;../artifacts/contracts/Counter.sol/Counter.json&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getEth</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// @ts-ignore</span></span><br><span class="line">  <span class="keyword">const</span> eth = <span class="variable language_">window</span>.<span class="property">ethereum</span>;</span><br><span class="line">  <span class="keyword">if</span> (!eth) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;No ethereum provider found&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> eth;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//prompt for permission if no connected accounts</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">requestAccess</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> eth = <span class="title function_">getEth</span>();</span><br><span class="line">  <span class="keyword">const</span> result = (<span class="keyword">await</span> eth.<span class="title function_">request</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>: <span class="string">&quot;eth_requestAccounts&quot;</span>,</span><br><span class="line">  &#125;)) <span class="keyword">as</span> <span class="built_in">string</span>[];</span><br><span class="line">  <span class="keyword">return</span> result &amp;&amp; result.<span class="property">length</span> &gt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//return connected accounts</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">hasSigners</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> metamask = <span class="title function_">getEth</span>();</span><br><span class="line">  <span class="keyword">const</span> signers = (<span class="keyword">await</span> metamask.<span class="title function_">request</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>: <span class="string">&quot;eth_accounts&quot;</span>,</span><br><span class="line">  &#125;)) <span class="keyword">as</span> <span class="built_in">string</span>[];</span><br><span class="line">  <span class="keyword">return</span> signers.<span class="property">length</span> &gt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">getContract</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 1. 地址</span></span><br><span class="line">  <span class="comment">// 2. 方法名</span></span><br><span class="line">  <span class="comment">// 3. provider</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!(<span class="keyword">await</span> <span class="title function_">hasSigners</span>()) &amp;&amp; !(<span class="keyword">await</span> <span class="title function_">requestAccess</span>())) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;No ethereum provider found&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> provider = <span class="keyword">new</span> ethers.<span class="title class_">BrowserProvider</span>(<span class="title function_">getEth</span>()); <span class="comment">//ethers v6</span></span><br><span class="line">  <span class="keyword">const</span> address = process.<span class="property">env</span>.<span class="property">CONTRACT_ADDRESS</span>;</span><br><span class="line">  <span class="keyword">const</span> contract = <span class="keyword">new</span> ethers.<span class="title class_">Contract</span>(</span><br><span class="line">    address,</span><br><span class="line">    abi,</span><br><span class="line">    <span class="keyword">await</span> provider.<span class="title function_">getSigner</span>() <span class="comment">//provider or signer</span></span><br><span class="line">  );</span><br><span class="line">  <span class="comment">//debug</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(contract);</span><br><span class="line">  <span class="comment">//interaction with contract</span></span><br><span class="line">  <span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">getCount</span>(<span class="params"></span>) &#123;</span><br><span class="line">    counter.<span class="property">innerHTML</span> = <span class="keyword">await</span> contract.<span class="title function_">getCount</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">incremnet</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">await</span> contract.<span class="title function_">count</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//&#x27;contract.on&#x27; &#x27;listeners</span></span><br><span class="line">  <span class="comment">//filtering all</span></span><br><span class="line">  contract.<span class="title function_">on</span>(<span class="string">&quot;countIncremented&quot;</span>, <span class="title function_">async</span> (user, count) =&gt; &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Filtered event: new count: <span class="subst">$&#123;count&#125;</span>, user: <span class="subst">$&#123;user&#125;</span>`</span>);</span><br><span class="line">    counter.<span class="property">innerHTML</span> = count.<span class="title function_">toString</span>();</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="comment">//filtering certain sender</span></span><br><span class="line">  contract.<span class="title function_">on</span>(</span><br><span class="line">    contract.<span class="property">filters</span>.<span class="title function_">countIncremented</span>(</span><br><span class="line">      <span class="string">&quot;0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266&quot;</span>,</span><br><span class="line">      <span class="literal">null</span></span><br><span class="line">    ),</span><br><span class="line">    <span class="title function_">async</span> (user, count) =&gt; &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Filtered event: new count: <span class="subst">$&#123;count&#125;</span>, user: <span class="subst">$&#123;user&#125;</span>`</span>);</span><br><span class="line">      counter.<span class="property">innerHTML</span> = count;</span><br><span class="line">    &#125;</span><br><span class="line">  );</span><br><span class="line">  <span class="comment">//this won&#x27;t work since &#x27;count&#x27; is not indexed</span></span><br><span class="line">  contract.<span class="title function_">on</span>(</span><br><span class="line">    contract.<span class="property">filters</span>.<span class="title function_">countIncremented</span>(</span><br><span class="line">      <span class="string">&quot;0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266&quot;</span>,</span><br><span class="line">      <span class="number">10</span></span><br><span class="line">    ),</span><br><span class="line">    <span class="title function_">async</span> (user, count) =&gt; &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Filtered event: new count: <span class="subst">$&#123;count&#125;</span>, user: <span class="subst">$&#123;user&#125;</span>`</span>);</span><br><span class="line">      counter.<span class="property">innerHTML</span> = count;</span><br><span class="line">    &#125;</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  <span class="comment">//setup html</span></span><br><span class="line">  <span class="keyword">const</span> counter = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;div&quot;</span>);</span><br><span class="line">  <span class="keyword">const</span> btn = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;button&quot;</span>);</span><br><span class="line">  btn.<span class="property">innerHTML</span> = <span class="string">&quot;increment&quot;</span>;</span><br><span class="line"></span><br><span class="line">  btn.<span class="property">onclick</span> = <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">incremnet</span>();</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(counter);</span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(btn);</span><br><span class="line">  <span class="comment">//display count when page refreshing</span></span><br><span class="line">  <span class="title function_">getCount</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">main</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">getContract</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">main</span>();</span><br></pre></td></tr></table></figure>
+
+<h3 id="contract-on"><a href="#contract-on" class="headerlink" title="contract.on"></a><code>contract.on</code></h3><p>contract.on(“eventName”, callback) listens for the event emitted by the contract.</p>
+<ol>
+<li>filtering all</li>
+</ol>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">contract.<span class="title function_">on</span>(<span class="string">&quot;countIncremented&quot;</span>, <span class="title function_">async</span> (user, count) =&gt; &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Filtered event: new count: <span class="subst">$&#123;count&#125;</span>, user: <span class="subst">$&#123;user&#125;</span>`</span>);</span><br><span class="line">  counter.<span class="property">innerHTML</span> = count.<span class="title function_">toString</span>();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>filtering indexed arguments</li>
+</ol>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">contract.<span class="title function_">on</span>(</span><br><span class="line">  contract.<span class="property">filters</span>.<span class="title function_">countIncremented</span>(</span><br><span class="line">    <span class="string">&quot;0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266&quot;</span>,</span><br><span class="line">    <span class="literal">null</span></span><br><span class="line">  ),</span><br><span class="line">  <span class="title function_">async</span> (user, count) =&gt; &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Filtered event: new count: <span class="subst">$&#123;count&#125;</span>, user: <span class="subst">$&#123;user&#125;</span>`</span>);</span><br><span class="line">    counter.<span class="property">innerHTML</span> = count;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>if there are no specific criteras to filter, <code>&quot;countIncremented&quot;</code> and <code>contract.filters.countIncremented()</code>both world work. but the arguments of callback function has to follow the order of event.</li>
+<li>if there are indexed arguments to filter, all the arguments need to be listed in the filter, e.g., <code>contract.filters.countIncremented(&quot;0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266&quot;,null ),</code>.</li>
+<li>non-indexed arguments CAN NOT be filtered, <code>contract.filters.countIncremented(null,10),</code> won’t work.</li>
+<li>Different listeners for same event type might interfere with each other, only one of them will catch the event.</li>
+</ul>
+<h2 id="provider-on"><a href="#provider-on" class="headerlink" title="provider.on"></a><code>provider.on</code></h2><p>provider.on is more general and allows you to listen for any blockchain events, not just events emitted by a specific contract. It’s helpful for listening to logs, block events, or specific transaction events.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -1874,7 +1908,7 @@ This command creates an executable file in target&#x2F;debug&#x2F;hello_cargo, s
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
