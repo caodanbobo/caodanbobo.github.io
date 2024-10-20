@@ -229,6 +229,148 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/20/rust-0401-Box/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/10/20/rust-0401-Box/" itemprop="url">Rust lesson 3.8 - Collections</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-20T15:31:53+08:00">
+                2024-10-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Introducing-smart-pointer-Box"><a href="#Introducing-smart-pointer-Box" class="headerlink" title="Introducing smart pointer Box&lt;T&gt;"></a>Introducing smart pointer <code>Box&lt;T&gt;</code></h1><h2 id="1-what-is-Box"><a href="#1-what-is-Box" class="headerlink" title="1. what is Box&lt;T&gt;"></a>1. what is <code>Box&lt;T&gt;</code></h2><p><code>Pointer</code>: A variable that contains a address of another variable, e.g., &amp;i32, &amp;[T], etc.</p>
+<p><code>Box&lt;T&gt;</code> is no different, it allows us to store data on the heap, and it store a address of the heap.</p>
+<h2 id="What-is-it-for"><a href="#What-is-it-for" class="headerlink" title="What is it for"></a>What is it for</h2><h3 id="1-Storing-data-on-the-heap"><a href="#1-Storing-data-on-the-heap" class="headerlink" title="1. Storing data on the heap"></a>1. Storing data on the heap</h3><p>In the following example, we store 5 on the heap instead of stack.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">b</span> = <span class="type">Box</span>::<span class="title function_ invoke__">new</span>(<span class="number">5</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;b = &#123;b&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-Enabling-Recursive-types"><a href="#2-Enabling-Recursive-types" class="headerlink" title="2. Enabling Recursive types"></a>2. Enabling Recursive types</h3><p>The following enum is not valid in rust. Previously, we have discussed the memory layout of enum, we learnt that the size of the enum depends on the largest variant b. The <code>List</code> here is a recursize type, there is no way to know the size of it, the Rust would assume the size of it is infinite.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">enum List &#123;</span><br><span class="line">    Cons(i32, List), //wrong</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>However, the size of <code>Box&lt;T&gt;</code> is fixed, it enables us to use recursive types like</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">List</span> &#123;</span><br><span class="line">    <span class="title function_ invoke__">Cons</span>(<span class="type">i32</span>, <span class="type">Box</span>&lt;List&gt;),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Featurs-of-a-smart-pointer"><a href="#Featurs-of-a-smart-pointer" class="headerlink" title="Featurs of a smart pointer"></a>Featurs of a smart pointer</h2><h3 id="Dereference-using-Deref-Trait"><a href="#Dereference-using-Deref-Trait" class="headerlink" title="Dereference using Deref Trait"></a>Dereference using <code>Deref</code> Trait</h3><p><code>Box&lt;T&gt;</code> implements <code>Deref</code> trait which provides a function <code>deref</code> that would return the &amp;T:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ops::Deref;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;T&gt; Deref <span class="keyword">for</span> <span class="title class_">MyBox</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Target</span> = T;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">deref</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> &amp;<span class="keyword">Self</span>::Target &#123;</span><br><span class="line">        &amp;<span class="keyword">self</span>.<span class="number">0</span> <span class="comment">//MyBox is a tuple struct</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>*y</code> would be subsitutes the ‘_‘ with a call to <code>deref</code> by rust:</p>
+<p><code>*y</code> &#x3D;&gt; <code>*(y.deref())</code> &#x3D;&gt; <code>*(&amp;x)</code>&#x3D;&gt;<code>x</code></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">y</span> = <span class="type">Box</span>::<span class="title function_ invoke__">new</span>(x);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, x);</span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, *y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Mutable-reference-with-DerefMut"><a href="#Mutable-reference-with-DerefMut" class="headerlink" title="Mutable reference with DerefMut"></a>Mutable reference with <code>DerefMut</code></h3><p>Similar to <code>Deref</code>, <code>DerefMut</code> provides a <code>deref_mut</code> function return a mutable reference of T:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ops::DerefMut;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;T&gt; DerefMut <span class="keyword">for</span> <span class="title class_">MyBox</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Target</span> = T;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">deref_mut</span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) <span class="punctuation">-&gt;</span> &amp;<span class="keyword">mut</span> <span class="keyword">Self</span>::Target &#123;</span><br><span class="line">        &amp;<span class="keyword">mut</span> <span class="keyword">self</span>.<span class="number">0</span> <span class="comment">//MyBox is a tuple struct</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Cleanup-automatically"><a href="#Cleanup-automatically" class="headerlink" title="Cleanup automatically"></a>Cleanup automatically</h3><p><code>Box&lt;T&gt;</code> also implements <code>Drop</code> trait, witch provides a <code>drop</code> allowing customizeable actions when a value is about to out of scope.</p>
+<p>In terms of <code>Box&lt;T&gt;</code>, the <code>drop</code> is set to deallocate the space on the heap that the box points to.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/16/rust-0308-collections/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -313,6 +455,9 @@
 <h3 id="Accessing-element"><a href="#Accessing-element" class="headerlink" title="Accessing element"></a>Accessing element</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">sec_num</span>=v_2[<span class="number">1</span>];</span><br><span class="line"><span class="comment">//let panic_num=v_2[3];</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">third</span>: <span class="type">Option</span>&lt;&amp;<span class="type">i32</span>&gt;=v_2.<span class="title function_ invoke__">get</span>(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
 
 <h3 id="deleting-elements"><a href="#deleting-elements" class="headerlink" title="deleting elements"></a>deleting elements</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">v_2</span> = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">let</span> <span class="variable">last</span>=v2.<span class="title function_ invoke__">pop</span>(); <span class="comment">// remove last element</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Slice-T"><a href="#Slice-T" class="headerlink" title="Slice &amp;[T]"></a>Slice &amp;[T]</h3><p>The type &amp;[T] is a reference (or pointer) to a slice of data that can reside in either an array or a vector.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">printSlice</span>(slice: &amp;[<span class="type">i32</span>])&#123;</span><br><span class="line">    <span class="built_in">println!</span>&#123;<span class="string">&quot;&#123;&#125;&quot;</span>, slice&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>()&#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">my_vec</span> = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">my_array</span> = [<span class="number">5</span>; <span class="number">3</span>];</span><br><span class="line">    <span class="title function_ invoke__">printSlice</span>(&amp;my_vec);</span><br><span class="line">    <span class="title function_ invoke__">printSlice</span>(&amp;my_array);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="3-HashMap"><a href="#3-HashMap" class="headerlink" title="3. HashMap"></a>3. HashMap</h2><p>The HashMap does not come with prelude, to use it we need to <code>use std::collections::HashMap;</code>.</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">scores</span> = HashMap::<span class="title function_ invoke__">new</span>();</span><br><span class="line"><span class="comment">//inserting elements, it is a HashMap&lt;String, i32&gt;</span></span><br><span class="line">scores.<span class="title function_ invoke__">insert</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;Blue&quot;</span>), <span class="number">10</span>);</span><br><span class="line">scores.<span class="title function_ invoke__">insert</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;Yellow&quot;</span>), <span class="number">50</span>);</span><br><span class="line"><span class="comment">//updating elements</span></span><br><span class="line">scores.<span class="title function_ invoke__">insert</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;Blue&quot;</span>), <span class="number">60</span>);</span><br><span class="line"><span class="comment">//getting elements</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">team_name</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;Blue&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">score</span> = scores.<span class="title function_ invoke__">get</span>(&amp;team_name).<span class="title function_ invoke__">copied</span>().<span class="title function_ invoke__">unwrap_or</span>(<span class="number">0</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -1655,161 +1800,11 @@ As we mentioned in in the ownership chapter, the exclusive access to <code>x </c
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/23/rust-01/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/09/23/rust-01/" itemprop="url">Rust lesson 1 - Hello World!</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-23T20:12:52+08:00">
-                2024-09-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Target-Setting-up-Rust-development-environment"><a href="#Target-Setting-up-Rust-development-environment" class="headerlink" title="Target: Setting up Rust development environment"></a>Target: Setting up Rust development environment</h1><h2 id="1-Installation"><a href="#1-Installation" class="headerlink" title="1. Installation"></a>1. Installation</h2><p>Installing rustup in terminal:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl --proto <span class="string">&#x27;=https&#x27;</span> --tlsv1.2 https://sh.rustup.rs -sSf | sh</span><br></pre></td></tr></table></figure>
-
-<p>To check whether your installion successed:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rustc --version</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-Setting-up-IDE-VS-Code"><a href="#2-Setting-up-IDE-VS-Code" class="headerlink" title="2. Setting up IDE (VS Code)"></a>2. Setting up IDE (VS Code)</h2><p>If you are going to code rust with vs code, here are some usfer plugins:</p>
-<ol>
-<li>rust-analyzer</li>
-<li>Even Better TOML</li>
-<li>Dependi (a modern <code>cartes</code>)</li>
-</ol>
-<h2 id="3-Hello-World"><a href="#3-Hello-World" class="headerlink" title="3. Hello World"></a>3. Hello World</h2><p>To run our frist rust functio, we can simply create a ‘.rs’ file, e.g., ‘main.rs’:</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Hello, world!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Then building it with command <code>rustc main.rs</code>, there would be a binary file ‘main’. And the file can be executed in your terminal or other command line tools.</p>
-<h2 id="4-Cargo"><a href="#4-Cargo" class="headerlink" title="4. Cargo"></a>4. Cargo</h2><p>Cargo is Rust’s build system and package manager. It is a great tool helping developers building the codes and managing the dependices.</p>
-<ol>
-<li>Creating a Project with Cargo<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cargo new hello_cargo</span><br></pre></td></tr></table></figure></li>
-<li>Build the project<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cargo build</span><br></pre></td></tr></table></figure>
-This command creates an executable file in target&#x2F;debug&#x2F;hello_cargo, similar to building with ‘rustc’.</li>
-<li>Build and Run<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cargo run</span><br></pre></td></tr></table></figure></li>
-<li>Just compile without producing an executable<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cargo check</span><br></pre></td></tr></table></figure></li>
-<li>Building for Release<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cargo build --release</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="5-Dependencies-management-with-cargo"><a href="#5-Dependencies-management-with-cargo" class="headerlink" title="5. Dependencies management with cargo"></a>5. Dependencies management with cargo</h2><p>Dependencis of the project are listed in the ‘Cargo.toml’ file, for example:</p>
-<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;hello_cargo&quot;</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">rand</span>=<span class="string">&quot;0.8.5&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>In this example, a ‘rand’ library is added.</p>
-<h3 id="The-remote-repository-of-Cargo-dependencis-optional"><a href="#The-remote-repository-of-Cargo-dependencis-optional" class="headerlink" title="The remote repository of Cargo dependencis[optional]"></a>The remote repository of Cargo dependencis[optional]</h3><p>Sometimes, we want to change the remote repository for fatser downloading, the default source can be override by adding follow configuration in ‘$HOME&#x2F;.cargo&#x2F;config.toml’:</p>
-<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[source.crates-io]</span></span><br><span class="line"><span class="attr">replace-with</span> = <span class="string">&#x27;ustc&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[source.ustc]</span></span><br><span class="line"><span class="attr">registry</span> = <span class="string">&quot;git://mirrors.ustc.edu.cn/crates.io-index&quot;</span></span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
   </nav>
 
 
@@ -1855,7 +1850,7 @@ This command creates an executable file in target&#x2F;debug&#x2F;hello_cargo, s
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
