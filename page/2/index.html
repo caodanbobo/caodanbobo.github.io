@@ -229,6 +229,365 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/08/rust-0301-types/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/10/08/rust-0301-types/" itemprop="url">Rust lesson 3.1 - Data Types</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-08T20:14:34+08:00">
+                2024-10-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Target-Getting-familiar-with-Data-types"><a href="#Target-Getting-familiar-with-Data-types" class="headerlink" title="Target: Getting familiar with Data types"></a>Target: Getting familiar with Data types</h1><h2 id="1-Scalar-Types"><a href="#1-Scalar-Types" class="headerlink" title="1. Scalar Types"></a>1. Scalar Types</h2><h3 id="1-1-Integer"><a href="#1-1-Integer" class="headerlink" title="1.1 Integer"></a>1.1 Integer</h3><h4 id="Types"><a href="#Types" class="headerlink" title="Types"></a>Types</h4><ul>
+<li>i: signed</li>
+<li>u: unsigned</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Length</th>
+<th>Signed</th>
+<th>Unsigned</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>8-bit</strong></td>
+<td>i8</td>
+<td>u8</td>
+</tr>
+<tr>
+<td><strong>16-bit</strong></td>
+<td>i16</td>
+<td>u16</td>
+</tr>
+<tr>
+<td><strong>32-bit</strong></td>
+<td>i32</td>
+<td>u32</td>
+</tr>
+<tr>
+<td><strong>64-bit</strong></td>
+<td>i64</td>
+<td>u64</td>
+</tr>
+<tr>
+<td><strong>128-bit</strong></td>
+<td>i128</td>
+<td>u128</td>
+</tr>
+<tr>
+<td><strong>arch</strong></td>
+<td>isize</td>
+<td>usize</td>
+</tr>
+</tbody></table>
+<h4 id="Integer-Literals"><a href="#Integer-Literals" class="headerlink" title="Integer Literals"></a>Integer Literals</h4><table>
+<thead>
+<tr>
+<th>Number literals</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Decimal</td>
+<td>98_222</td>
+</tr>
+<tr>
+<td>Hex</td>
+<td>0xff</td>
+</tr>
+<tr>
+<td>Octal</td>
+<td>0o77</td>
+</tr>
+<tr>
+<td>Binary</td>
+<td>0b1111_0000</td>
+</tr>
+<tr>
+<td>Byte (u8 only)</td>
+<td>b’A’</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-Floating-Point"><a href="#1-2-Floating-Point" class="headerlink" title="1.2 Floating-Point"></a>1.2 Floating-Point</h3><p><code>f32, f64</code></p>
+<p><strong>These will lose precision in the arithmetic, using integer instead</strong></p>
+<h3 id="1-3-Boolean"><a href="#1-3-Boolean" class="headerlink" title="1.3 Boolean"></a>1.3 Boolean</h3><p>true&#x2F;false</p>
+<h3 id="1-4-Character"><a href="#1-4-Character" class="headerlink" title="1.4 Character"></a>1.4 Character</h3><p>In rust, char can store any valid Unicaode(up to 4bytes).</p>
+<p><code>&quot;a 你好&quot;</code></p>
+<ul>
+<li>‘a’: 1 byte (0x61)</li>
+<li>‘你’: 3 bytes (0xe4 0xbd 0xa0)</li>
+<li>‘好’: 3 bytes (0xe5 a5 bd)</li>
+</ul>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">text</span> = <span class="string">&quot;a你好&quot;</span>;</span><br><span class="line"><span class="comment">// Byte length of the string</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Byte length: &#123;&#125;&quot;</span>, text.<span class="title function_ invoke__">len</span>()); <span class="comment">// 7</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Character length of the string</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Character length: &#123;&#125;&quot;</span>, text.<span class="title function_ invoke__">chars</span>().<span class="title function_ invoke__">count</span>()); <span class="comment">// 3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Loop through every character</span></span><br><span class="line"><span class="keyword">for</span> <span class="variable">c</span> <span class="keyword">in</span> text.<span class="title function_ invoke__">chars</span>() &#123;</span><br><span class="line">    <span class="built_in">print!</span>(<span class="string">&quot;Character: &#123;&#125;&quot;</span>, c); <span class="comment">//a你好</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">ni</span> = text.<span class="title function_ invoke__">chars</span>().<span class="title function_ invoke__">nth</span>(<span class="number">1</span>); <span class="comment">//Some(你)</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">char_a</span>=text[<span class="number">0</span>];</span><br><span class="line"><span class="comment">//text[1]: this will NOT work, becease 你 is a slice from 1 to 3(text[1..4]), and spliting is not allowed</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-Compound-Types"><a href="#2-Compound-Types" class="headerlink" title="2. Compound Types"></a>2. Compound Types</h2><h3 id="2-1-Arrays"><a href="#2-1-Arrays" class="headerlink" title="2.1 Arrays"></a>2.1 Arrays</h3><ul>
+<li>fixed length</li>
+<li>same type</li>
+</ul>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">a</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]; <span class="comment">//</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">b</span>: [<span class="type">i32</span>; <span class="number">5</span>] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span><br><span class="line"><span class="keyword">let</span> <span class="variable">c</span> = [<span class="number">3</span>; <span class="number">5</span>]; <span class="comment">//[3, 3, 3, 3, 3];</span></span><br><span class="line"><span class="comment">//to loop over the array</span></span><br><span class="line"><span class="keyword">for</span> <span class="title class_">n</span>:&amp;<span class="type">i32</span> <span class="keyword">in</span> a.iter&#123;&#125;</span><br><span class="line"><span class="keyword">for</span> <span class="title class_">n</span>:&amp;<span class="type">i32</span>  <span class="keyword">in</span> &amp;a &#123;&#125;</span><br><span class="line"><span class="comment">//to access the value by its index</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;The first element in the array b is &#123;&#125;&quot;</span>, b[<span class="number">0</span>]);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-Structs"><a href="#2-2-Structs" class="headerlink" title="2.2 Structs"></a>2.2 Structs</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//regular</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">User</span> &#123;</span><br><span class="line">    active: <span class="type">bool</span>,</span><br><span class="line">    username: <span class="type">String</span>,</span><br><span class="line">    email: <span class="type">String</span>,</span><br><span class="line">    sign_in_count: <span class="type">u64</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//tuple struct</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Color</span>(<span class="type">i32</span>, <span class="type">i32</span>, <span class="type">i32</span>);</span><br><span class="line"><span class="comment">//unit</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">AlwaysEqual</span>;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/24/rust-02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/09/24/rust-02/" itemprop="url">Rust lesson 2 - Rust basics</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-24T20:02:54+08:00">
+                2024-09-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Target-Getting-familiar-with-basics"><a href="#Target-Getting-familiar-with-basics" class="headerlink" title="Target: Getting familiar with basics"></a>Target: Getting familiar with basics</h1><h2 id="1-Variables-and-Mutability"><a href="#1-Variables-and-Mutability" class="headerlink" title="1. Variables and Mutability"></a>1. Variables and Mutability</h2><h3 id="1-1-Variables"><a href="#1-1-Variables" class="headerlink" title="1.1 Variables"></a>1.1 Variables</h3><p>To define a variable:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let x=5;</span><br><span class="line">//x=6 would throw an error</span><br></pre></td></tr></table></figure>
+
+<p>By default, the ‘x’ is immutabel, to make a variable mutable:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let mut x=5;</span><br><span class="line">x=6;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Shadowing"><a href="#Shadowing" class="headerlink" title="Shadowing"></a>Shadowing</h4><p>Declaring a new variable with the same name as a previous variable, this is true for both mutable and immutable variables.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = x + <span class="number">1</span>; <span class="comment">//6</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">x</span> = x * <span class="number">2</span>; <span class="comment">// 12</span></span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;The value of x in the inner scope is: &#123;x&#125;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The value of x is: &#123;x&#125;&quot;</span>); <span class="comment">//6</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The shadowing variable can be defined as the different data type:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let spaces = &quot;   &quot;;</span><br><span class="line">let spaces = spaces.len();</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-Constant"><a href="#1-2-Constant" class="headerlink" title="1.2 Constant"></a>1.2 Constant</h3><p>To define a constant:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;</span><br></pre></td></tr></table></figure>
+
+<p>Comparing to variables, the constant:</p>
+<ul>
+<li>is always immutable</li>
+<li>annote the type explicitly</li>
+<li>naming in uppercase fashion</li>
+<li>value must be defined in the declaration</li>
+<li>can not be shadowed</li>
+</ul>
+<h3 id="1-3-Static"><a href="#1-3-Static" class="headerlink" title="1.3 Static"></a>1.3 Static</h3><p>To define a static:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;</span><br></pre></td></tr></table></figure>
+
+<p>Comparing to constant, the static:</p>
+<ul>
+<li>can be mutable with ‘mut’ keyword, but this is NOT SAFE (surrounded in a ‘unsafe’ block).</li>
+<li>in the runtime, the constant is the acutual value compiler would replace it in the compilation. while static is alway pointing to the address.</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/23/rust-01/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1485,266 +1844,6 @@ This command creates an executable file in target&#x2F;debug&#x2F;hello_cargo, s
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/09/Solidity-lesson1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/09/09/Solidity-lesson1/" itemprop="url">Solidity Lesson 1 - Enviroment Setup</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-09T22:21:46+08:00">
-                2024-09-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Target-Set-up-the-environment-and-build-the-first-Solidity-contract"><a href="#Target-Set-up-the-environment-and-build-the-first-Solidity-contract" class="headerlink" title="Target: Set up the environment and build the first Solidity contract"></a>Target: Set up the environment and build the first Solidity contract</h1><h2 id="1-Setup-Hardhat"><a href="#1-Setup-Hardhat" class="headerlink" title="1. Setup Hardhat"></a>1. Setup Hardhat</h2><ol>
-<li>Initialize the project:<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn init -y</span><br></pre></td></tr></table></figure></li>
-<li>Install Hardhat as a dev dependency:<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D hardhat</span><br></pre></td></tr></table></figure></li>
-<li>Create a Hardhat project:<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="2-Project-Structure"><a href="#2-Project-Structure" class="headerlink" title="2. Project Structure"></a>2. Project Structure</h2><p><strong>‘contracts’ folder</strong></p>
-<p>This folder holds the smart contracts (*.sol files).</p>
-<p><strong>‘scripts’ folder</strong></p>
-<p>Programmers can write and store deploy scripts here.</p>
-<p><strong>‘ignition&#x2F;modules’ folder</strong></p>
-<p>Default deployment script files provided by Hardhat.</p>
-<p><strong>‘test’ folder</strong></p>
-<p>This folder is used for writing test scripts for your smart contracts.</p>
-<h2 id="3-Hello-World-Contract"><a href="#3-Hello-World-Contract" class="headerlink" title="3. Hello World Contract"></a>3. Hello World Contract</h2><p>Here is the basic “Hello World” contract in Solidity:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.24; // Must match the config file (hardhat.config.js)</span><br><span class="line"></span><br><span class="line">contract HelloWorld &#123;</span><br><span class="line">    function hello() public pure returns (string memory) &#123;</span><br><span class="line">        return &quot;Hello, world!&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-Compile-the-Contract"><a href="#4-Compile-the-Contract" class="headerlink" title="4. Compile the Contract"></a>4. Compile the Contract</h2><p>To compile your Solidity contract, run:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat compile</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/09/first-post/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/09/09/first-post/" itemprop="url">Hello Web3</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-09T21:10:32+08:00">
-                2024-09-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="My-First-Post-is-right-here"><a href="#My-First-Post-is-right-here" class="headerlink" title="My First Post is right here"></a>My First Post is right here</h1><blockquote>
-<p>That’s one small step for man, one giant leap for web3</p>
-</blockquote>
-<p>Just kidding. Enjoy coding ^^.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1795,7 +1894,7 @@ This command creates an executable file in target&#x2F;debug&#x2F;hello_cargo, s
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
