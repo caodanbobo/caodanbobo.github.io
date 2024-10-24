@@ -229,6 +229,131 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/10/hexo-deployment-issue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/09/10/hexo-deployment-issue/" itemprop="url">fixing 'Spawn failed' error when deploying hexo with 'hexo deploy' command</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-10T21:02:23+08:00">
+                2024-09-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="The-Error"><a href="#The-Error" class="headerlink" title="The Error"></a>The Error</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">error: RPC failed; HTTP 400 curl 22 The requested URL returned error: 400</span><br><span class="line">send-pack: unexpected disconnect while reading sideband packet</span><br><span class="line">Writing objects: 100% (171/171), 1.22 MiB | 1.41 MiB/s, done.</span><br><span class="line">Total 171 (delta 23), reused 0 (delta 0), pack-reused 0</span><br><span class="line">fatal: the remote end hung up unexpectedly</span><br><span class="line">Everything up-to-date</span><br><span class="line">FATAL Something&#x27;s wrong. Maybe you can find the solution here: https://hexo.io/docs/troubleshooting.html</span><br><span class="line">Error: Spawn failed</span><br><span class="line">    at ChildProcess.&lt;anonymous&gt; (/Users/cdbb/blog/node_modules/hexo-deployer-git/node_modules/hexo-util/lib/spawn.js:51:21)</span><br><span class="line">    at ChildProcess.emit (node:events:518:28)</span><br><span class="line">    at ChildProcess._handle.onexit (node:internal/child_process:294:12)</span><br></pre></td></tr></table></figure>
+
+<h1 id="Fixing"><a href="#Fixing" class="headerlink" title="Fixing"></a>Fixing</h1><p>I first tried looking for fixes on the error ‘Spawn failed<br>at ChildProcess.<anonymous> (&#x2F;Users&#x2F;cdbb&#x2F;blog&#x2F;node_modules&#x2F;hexo-deployer-git&#x2F;node_modules&#x2F;hexo-util&#x2F;lib&#x2F;spawn.js:51:21)’ . But all i got was about deleting the ‘.deploy_git’ folder located in ‘cd &#x2F;usr&#x2F;local&#x2F;src&#x2F;hexo&#x2F;hanyubolg&#x2F;‘, and i could find it.<br>Than i noticed the error ‘error: RPC failed; HTTP 400 curl 22 The requested URL returned error: 400’, and found the answer <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/62753648/rpc-failed-http-400-curl-22-the-requested-url-returned-error-400-bad-request">here</a>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config http.postBuffer 524288000</span><br></pre></td></tr></table></figure>
+
+<p>and tried <code>hexo g -d</code>, everything went through.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/09/Solidity-lesson1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -658,7 +783,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Smart Pointer Part II1. Rc&lt;T&gt;Rc&lt;T&gt; is design to handle multiple ownerships cases, e.g., graphs, tree. Imgine there is linked list: 123b -&gt; 3 -&gt;     a -&gt; 5 -&gt; 10c -&gt;4 -&gt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust lesson 4.4 - Smart Pointer II">
+<meta property="og:url" content="http://example.com/2024/10/22/rust-0404-rc&refcell/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Smart Pointer Part II1. Rc&lt;T&gt;Rc&lt;T&gt; is design to handle multiple ownerships cases, e.g., graphs, tree. Imgine there is linked list: 123b -&gt; 3 -&gt;     a -&gt; 5 -&gt; 10c -&gt;4 -&gt;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-10-22T13:52:05.079Z">
+<meta property="article:modified_time" content="2024-10-24T13:43:25.829Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2024/10/22/rust-0404-rc&refcell/"/>
+
+
+
+
+
+  <title>Rust lesson 4.4 - Smart Pointer II | Hexo</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/22/rust-0404-rc&refcell/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Rust lesson 4.4 - Smart Pointer II</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-22T21:52:05+08:00">
+                2024-10-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Smart-Pointer-Part-II"><a href="#Smart-Pointer-Part-II" class="headerlink" title="Smart Pointer Part II"></a>Smart Pointer Part II</h1><h2 id="1-Rc"><a href="#1-Rc" class="headerlink" title="1. Rc&lt;T&gt;"></a>1. <code>Rc&lt;T&gt;</code></h2><p><code>Rc&lt;T&gt;</code> is design to handle multiple ownerships cases, e.g., graphs, tree.</p>
+<p>Imgine there is linked list:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">b -&gt; 3 -&gt;</span><br><span class="line">     a -&gt; 5 -&gt; 10</span><br><span class="line">c -&gt;4 -&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>How are gonna represent it in rust?</strong></p>
+<h3 id="1-Using-Box"><a href="#1-Using-Box" class="headerlink" title="1. Using Box"></a>1. Using Box<T></h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//code with errors</span></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">List</span> &#123;</span><br><span class="line">    <span class="title function_ invoke__">Cons</span>(<span class="type">i32</span>, <span class="type">Box</span>&lt;List&gt;),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">a</span> = <span class="title function_ invoke__">Cons</span>(<span class="number">5</span>, <span class="type">Box</span>::<span class="title function_ invoke__">new</span>(<span class="title function_ invoke__">Cons</span>(<span class="number">10</span>, <span class="type">Box</span>::<span class="title function_ invoke__">new</span>(Nil))));</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">b</span> = <span class="title function_ invoke__">Cons</span>(<span class="number">3</span>, <span class="type">Box</span>::<span class="title function_ invoke__">new</span>(a));</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">c</span> = <span class="title function_ invoke__">Cons</span>(<span class="number">4</span>, <span class="type">Box</span>::<span class="title function_ invoke__">new</span>(a)); <span class="comment">// use of moved value &#x27;a&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Box&lt;T&gt;</code> is for single ownership, it does not fit here.</p>
+<h3 id="2-Using-references"><a href="#2-Using-references" class="headerlink" title="2. Using references"></a>2. Using references</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">List</span>&lt;<span class="symbol">&#x27;a</span>&gt; &#123;</span><br><span class="line">    <span class="title function_ invoke__">Cons</span>(<span class="type">i32</span>, &amp;<span class="symbol">&#x27;a</span> List&lt;<span class="symbol">&#x27;a</span>&gt;),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">a</span> = <span class="title function_ invoke__">Cons</span>(<span class="number">5</span>, &amp;<span class="title function_ invoke__">Cons</span>(<span class="number">10</span>, &amp;Nil));</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">b</span> = <span class="title function_ invoke__">Cons</span>(<span class="number">3</span>, &amp;a);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">c</span> = <span class="title function_ invoke__">Cons</span>(<span class="number">4</span>, &amp;a);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;:?&#125;&quot;</span>, a);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;:?&#125;&quot;</span>, b);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;:?&#125;&quot;</span>, c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This would work with carefully handled lifetimes, not for every scenario.</p>
+<h3 id="3-Rc"><a href="#3-Rc" class="headerlink" title="3. Rc&lt;T&gt;"></a>3. <code>Rc&lt;T&gt;</code></h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">List</span> &#123;</span><br><span class="line">    <span class="title function_ invoke__">Cons</span>(<span class="type">i32</span>, Rc&lt;List&gt;),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">a</span> = Rc::<span class="title function_ invoke__">new</span>(<span class="title function_ invoke__">Cons</span>(<span class="number">5</span>, Rc::<span class="title function_ invoke__">new</span>(<span class="title function_ invoke__">Cons</span>(<span class="number">10</span>, Rc::<span class="title function_ invoke__">new</span>(Nil)))));</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;count after creating a = &#123;&#125;&quot;</span>, Rc::<span class="title function_ invoke__">strong_count</span>(&amp;a)); <span class="comment">//1</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">b</span> = <span class="title function_ invoke__">Cons</span>(<span class="number">3</span>, Rc::<span class="title function_ invoke__">clone</span>(&amp;a));</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;count after creating b = &#123;&#125;&quot;</span>, Rc::<span class="title function_ invoke__">strong_count</span>(&amp;a)); <span class="comment">//2</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">c</span> = <span class="title function_ invoke__">Cons</span>(<span class="number">4</span>, Rc::<span class="title function_ invoke__">clone</span>(&amp;a));</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;count after creating c = &#123;&#125;&quot;</span>, Rc::<span class="title function_ invoke__">strong_count</span>(&amp;a));<span class="comment">//3</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;count after c goes out of scope = &#123;&#125;&quot;</span>, Rc::<span class="title function_ invoke__">strong_count</span>(&amp;a));<span class="comment">//2, compiler drop c</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Via <strong>immutable</strong> references, Rc<T> allows you to share data between multiple parts of your program for <strong>reading only</strong>.</p>
+<h3 id="How-Rc-works"><a href="#How-Rc-works" class="headerlink" title="How Rc&lt;T&gt; works"></a>How <code>Rc&lt;T&gt; </code>works</h3><p>Rc is abbreviation of Reference Counting,</p>
+<ul>
+<li>it type keeps track of the number of references to a value:<ul>
+<li><code>Rc::new</code> or <code>Rc::clone</code> would increase the counter by 1.</li>
+<li><code>drop</code> would decrease the counter by 1.</li>
+</ul>
+</li>
+<li>if the number of reference goes to 0, the Rc<T> will be clean up completely.</li>
+</ul>
+<h2 id="2-RefCell"><a href="#2-RefCell" class="headerlink" title="2. RefCell&lt;T&gt;"></a>2. <code>RefCell&lt;T&gt;</code></h2><p>Rc<T> is immutable reference for read-only, what if we’d like to modify the list in former example?</p>
+<p><strong>Interior mutability</strong> is a design pattern in Rust that allows you to mutate data even when there are immutable references to that data:<br><em><strong>it bypasses the compiler borrow checker using <code>unsafe</code>.</strong></em></p>
+<p>we are going to look at the RefCell<T>, let us compare it with Rc<T> and Box<T> first.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>Rc&lt;T&gt;</code></th>
+<th><code>Box&lt;T&gt;</code></th>
+<th><code>RefCell&lt;T&gt;</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Immutable Borrowing</strong></td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><strong>Mutate Borrowing</strong></td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><strong>Multiple Owners</strong></td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><strong>Borrow Check</strong></td>
+<td>compile time</td>
+<td>compile time</td>
+<td>runtime</td>
+</tr>
+</tbody></table>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">rc_1</span> = RefCell::<span class="title function_ invoke__">new</span>(<span class="number">5</span>);</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">ref_01</span> = rc_1.<span class="title function_ invoke__">borrow</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">ref_02</span> = rc_1.<span class="title function_ invoke__">borrow</span>();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;ref_01= &#123;ref_01:?&#125;&quot;</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;ref_02= &#123;ref_02:?&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">m_ref_01</span> = rc_1.<span class="title function_ invoke__">borrow_mut</span>();</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;m_ref_01= &#123;m_ref_01:?&#125;&quot;</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="How-RefCell-works"><a href="#How-RefCell-works" class="headerlink" title="How RefCell&lt;T&gt; works"></a>How <code>RefCell&lt;T&gt; </code>works</h3><ul>
+<li><code>RefCell&lt;T&gt;</code> keeps track of the number of active smart pointer<ul>
+<li><code>Ref&lt;T&gt;</code> is created and returned from <code>borrow</code>, each of them is a immutable reference.</li>
+<li><code>RefMut&lt;T&gt;</code> is created and returned from <code>borrow_mut</code>, it is the mutable reference.</li>
+</ul>
+</li>
+<li><code>RefCell&lt;T&gt;</code> follows reference borrow rules. However the borrow check is performed at runtime, panic if violations occur.</li>
+</ul>
+<h3 id="Having-Multiple-Owners-of-Mutable-Data-by-Combining-Rc-and-RefCell"><a href="#Having-Multiple-Owners-of-Mutable-Data-by-Combining-Rc-and-RefCell" class="headerlink" title="Having Multiple Owners of Mutable Data by Combining Rc&lt;T&gt; and RefCell&lt;T&gt;"></a>Having Multiple Owners of Mutable Data by Combining <code>Rc&lt;T&gt; </code>and <code>RefCell&lt;T&gt;</code></h3><p>A common way to use <code>RefCell&lt;T&gt; </code>is in combination with <code>Rc&lt;T&gt;</code>. Recall that <code>Rc&lt;T&gt;</code> lets you have multiple owners of some data, but it only gives immutable access to that data. If you have an <code>Rc&lt;T&gt; </code>that holds a <code>RefCell&lt;T&gt;,</code> you can get a value that can have multiple owners and that you can mutate!</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">List</span> &#123;</span><br><span class="line">    <span class="title function_ invoke__">Cons</span>(Rc&lt;RefCell&lt;<span class="type">i32</span>&gt;&gt;, Rc&lt;List&gt;),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">value</span> = Rc::<span class="title function_ invoke__">new</span>(RefCell::<span class="title function_ invoke__">new</span>(<span class="number">5</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">a</span> = Rc::<span class="title function_ invoke__">new</span>(<span class="title function_ invoke__">Cons</span>(Rc::<span class="title function_ invoke__">clone</span>(&amp;value), Rc::<span class="title function_ invoke__">new</span>(Nil)));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">b</span> = <span class="title function_ invoke__">Cons</span>(Rc::<span class="title function_ invoke__">new</span>(RefCell::<span class="title function_ invoke__">new</span>(<span class="number">3</span>)), Rc::<span class="title function_ invoke__">clone</span>(&amp;a));</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">c</span> = <span class="title function_ invoke__">Cons</span>(Rc::<span class="title function_ invoke__">new</span>(RefCell::<span class="title function_ invoke__">new</span>(<span class="number">4</span>)), Rc::<span class="title function_ invoke__">clone</span>(&amp;a));</span><br><span class="line"></span><br><span class="line">    *value.<span class="title function_ invoke__">borrow_mut</span>() += <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;a after = &#123;a:?&#125;&quot;</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;b after = &#123;b:?&#125;&quot;</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;c after = &#123;c:?&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//a after = Cons(RefCell &#123; value: 15 &#125;, Nil)</span></span><br><span class="line"><span class="comment">//b after = Cons(RefCell &#123; value: 3 &#125;, Cons(RefCell &#123; value: 15 &#125;, Nil))</span></span><br><span class="line"><span class="comment">//c after = Cons(RefCell &#123; value: 4 &#125;, Cons(RefCell &#123; value: 15 &#125;, Nil))</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="How-to-prevent-memory-leak"><a href="#How-to-prevent-memory-leak" class="headerlink" title="How to prevent memory leak?"></a>How to prevent memory leak?</h2><h3 id="Reference-Cycle"><a href="#Reference-Cycle" class="headerlink" title="Reference Cycle"></a>Reference Cycle</h3><p>Since <code>RefCell&lt;T&gt;</code> allows mutable borrow, <code>and Rc&lt;T&gt;</code> allows multiple ownership, we can use them to create reference cycle leading to memory leak.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"><span class="keyword">use</span> std::cell::RefCell;</span><br><span class="line"><span class="keyword">use</span> std::rc::Rc;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">List</span> &#123;</span><br><span class="line">    <span class="title function_ invoke__">Cons</span>(<span class="type">i32</span>, RefCell&lt;Rc&lt;List&gt;&gt;),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">List</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">tail</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">Option</span>&lt;&amp;RefCell&lt;Rc&lt;List&gt;&gt;&gt; &#123;</span><br><span class="line">        <span class="keyword">match</span> <span class="keyword">self</span> &#123;</span><br><span class="line">            <span class="title function_ invoke__">Cons</span>(_, item) =&gt; <span class="title function_ invoke__">Some</span>(item),</span><br><span class="line">            Nil =&gt; <span class="literal">None</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In this code example, <code>Cons</code> is a tuple variant, and the second element is a mutable multiple-ownerable <code>List</code>.To create a reference cycle, we can create two <code>List</code> and let them own each other.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">a</span> = Rc::<span class="title function_ invoke__">new</span>(<span class="title function_ invoke__">Cons</span>(<span class="number">5</span>, RefCell::<span class="title function_ invoke__">new</span>(Rc::<span class="title function_ invoke__">new</span>(Nil)))); <span class="comment">// a -&gt; Nil</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;a initial rc count = &#123;&#125;&quot;</span>, Rc::<span class="title function_ invoke__">strong_count</span>(&amp;a));</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;a next item = &#123;:?&#125;&quot;</span>, a.<span class="title function_ invoke__">tail</span>());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">b</span> = Rc::<span class="title function_ invoke__">new</span>(<span class="title function_ invoke__">Cons</span>(<span class="number">10</span>, RefCell::<span class="title function_ invoke__">new</span>(Rc::<span class="title function_ invoke__">clone</span>(&amp;a)))); <span class="comment">//b -&gt; a -&gt; Nil</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;a rc count after b creation = &#123;&#125;&quot;</span>, Rc::<span class="title function_ invoke__">strong_count</span>(&amp;a));</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;b initial rc count = &#123;&#125;&quot;</span>, Rc::<span class="title function_ invoke__">strong_count</span>(&amp;b));</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;b next item = &#123;:?&#125;&quot;</span>, b.<span class="title function_ invoke__">tail</span>());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> <span class="variable">Some</span>(link) = a.<span class="title function_ invoke__">tail</span>() &#123;</span><br><span class="line">        *link.<span class="title function_ invoke__">borrow_mut</span>() = Rc::<span class="title function_ invoke__">clone</span>(&amp;b); <span class="comment">// a &lt;-&gt; b</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;b rc count after changing a = &#123;&#125;&quot;</span>, Rc::<span class="title function_ invoke__">strong_count</span>(&amp;b)); <span class="comment">//2</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;a rc count after changing a = &#123;&#125;&quot;</span>, Rc::<span class="title function_ invoke__">strong_count</span>(&amp;a)); <span class="comment">//2</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Uncomment the next line to see that we have a cycle;</span></span><br><span class="line">    <span class="comment">// it will overflow the stack</span></span><br><span class="line">    <span class="comment">// println!(&quot;a next item = &#123;:?&#125;&quot;, a.tail());</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>At the end of <code>main</code>, rust would <em>drop</em> both <code>a</code> and <code>b</code>. However, the the strong_count of Rc<List> will never reach 0, the memory allocated will remain uncollected forever.</p>
+<h3 id="Weak"><a href="#Weak" class="headerlink" title="Weak&lt;T&gt;"></a><code>Weak&lt;T&gt;</code></h3><p>There is <code>weak_count</code> similar to <code>strong_count</code> we learnt previously, They both are counter of the reference of <code>Rc&lt;T&gt;</code>. The main difference between them is that the value of weak_count won’t affect the memory cleanup.</p>
+<ul>
+<li><code>Rc::downgrade()</code> return a <code>Weak&lt;T&gt;</code> of the <code>Rc&lt;T&gt;</code> instance.</li>
+<li><code>Rc::upgrade()</code> return a <code>Option&lt;Rc&lt;T&gt;&gt;</code> of the <code>Weak&lt;T&gt;</code> instance. This is because the value that Weak<T> references might dropped already.</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2024/10/22/rust-0403-lifetime/" rel="next" title="Rust lesson 4.3 - lifetime">
+                <i class="fa fa-chevron-left"></i> Rust lesson 4.3 - lifetime
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Smart-Pointer-Part-II"><span class="nav-number">1.</span> <span class="nav-text">Smart Pointer Part II</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Rc"><span class="nav-number">1.1.</span> <span class="nav-text">1. Rc&lt;T&gt;</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Using-Box"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. Using Box</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Using-references"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. Using references</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Rc"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. Rc&lt;T&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-Rc-works"><span class="nav-number">1.1.4.</span> <span class="nav-text">How Rc&lt;T&gt; works</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-RefCell"><span class="nav-number">1.2.</span> <span class="nav-text">2. RefCell&lt;T&gt;</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#How-RefCell-works"><span class="nav-number">1.2.1.</span> <span class="nav-text">How RefCell&lt;T&gt; works</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Having-Multiple-Owners-of-Mutable-Data-by-Combining-Rc-and-RefCell"><span class="nav-number">1.2.2.</span> <span class="nav-text">Having Multiple Owners of Mutable Data by Combining Rc&lt;T&gt; and RefCell&lt;T&gt;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-prevent-memory-leak"><span class="nav-number">1.3.</span> <span class="nav-text">How to prevent memory leak?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Reference-Cycle"><span class="nav-number">1.3.1.</span> <span class="nav-text">Reference Cycle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Weak"><span class="nav-number">1.3.2.</span> <span class="nav-text">Weak&lt;T&gt;</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

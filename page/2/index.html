@@ -229,6 +229,168 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/08/rust-0302-ownership/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/10/08/rust-0302-ownership/" itemprop="url">Rust lesson 3.2 - Ownership and reference</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-08T21:04:40+08:00">
+                2024-10-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Target-Understanding-ownership"><a href="#Target-Understanding-ownership" class="headerlink" title="Target: Understanding ownership"></a>Target: Understanding ownership</h1><h2 id="1-Ownership"><a href="#1-Ownership" class="headerlink" title="1. Ownership"></a>1. Ownership</h2><h3 id="Rules"><a href="#Rules" class="headerlink" title="Rules"></a>Rules</h3><ul>
+<li><p>Each value in Rust has an owner.</p>
+<p><code>let my_string = String::from(&quot;abc&quot;);</code> my_string is the owner of the string.</p>
+</li>
+<li><p>There can only be one owner at a time.</p>
+<p><code>let str1 = my_string;</code> str1 is the owner, and my_string is no longer valid.</p>
+</li>
+<li><p>When the owner goes out of scope, the value will be dropped.</p>
+<p><code>&#123;&#125;</code> defines the scope; the variable is no longer valid outside its scope.</p>
+</li>
+</ul>
+<h2 id="2-Reference"><a href="#2-Reference" class="headerlink" title="2. Reference"></a>2. Reference</h2><p>Reference: accessing a variable without changing the ownership.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">abc_owner</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;abc&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">abc_ref</span> = &amp;abc_owner; <span class="comment">// abc_ref is a reference. abc_owner is still the owner.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">efg_owner</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;efg&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">efg_ref</span> = &amp;<span class="keyword">mut</span> efg_owner; <span class="comment">// efg_ref is a mutable reference.</span></span><br><span class="line">efg_ref.<span class="title function_ invoke__">push_str</span>(<span class="string">&quot;hik&quot;</span>); <span class="comment">// efg_owner is now &quot;efghik&quot;.</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Limitation-of-Reference"><a href="#Limitation-of-Reference" class="headerlink" title="Limitation of Reference"></a>Limitation of Reference</h3><p>The rule of reference is quite similar to read&#x2F;write lock:<br>A variable can have 1 ‘&amp;mut’ reference or multiple ‘&amp;’ reference.</p>
+<h3 id="Scope-of-references"><a href="#Scope-of-references" class="headerlink" title="Scope of references"></a>Scope of references</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">s</span>=<span class="type">String</span>::fr <span class="title function_ invoke__">om</span>(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">r1</span>=&amp;s;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">r2</span>=&amp;s;</span><br><span class="line"><span class="built_in">println!</span>&#123;<span class="string">&quot;&#123;r1&#125; and &#123;r2&#125;&quot;</span>&#125;; <span class="comment">//r1 and r2 are no longer refered after this</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">r3</span> = &amp;<span class="keyword">mut</span> s; <span class="comment">//r3 is the only ref of s</span></span><br><span class="line"><span class="title function_ invoke__">println</span>(<span class="string">&quot;&#123;r3&#125;&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Variables-in-memory"><a href="#3-Variables-in-memory" class="headerlink" title="3. Variables in memory"></a>3. Variables in memory</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">x</span>=<span class="number">5</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">y</span>=x;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;x = &#123;x&#125;, y = &#123;y&#125;&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">s1</span>=<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;abc&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">s2</span>=s2</span><br><span class="line"><span class="comment">//println!(&quot;s1 = &#123;s1&#125;, s2 = &#123;s2&#125;&quot;); s1 is not valid here</span></span><br></pre></td></tr></table></figure>
+
+<p>In this example we can see the primitive type (integer) behaves differently comparing to String. There are several reason:</p>
+<ul>
+<li>primitive variables are stored in the stack(cheap), while other types are stored in the heap(expansive).</li>
+<li>Primitive variables implemented ‘copy’ trait, ‘y&#x3D;x’ actually creates a copy of ‘x’ and assigns it to ‘y’</li>
+</ul>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">str_literal</span>=<span class="string">&quot;abc&quot;</span>; <span class="comment">// &amp;str, stored distinctly from heap and stack</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">s1</span>=<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;abc&quot;</span>); <span class="comment">//String</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">s1_ref</span>=&amp;s1; <span class="comment">//&amp;String</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">s2</span>=s1.<span class="title function_ invoke__">clone</span>() <span class="comment">//String, a separated instance in memory</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="4-mut"><a href="#4-mut" class="headerlink" title="4. mut"></a>4. <code>mut</code></h2><h3 id="Examples"><a href="#Examples" class="headerlink" title="Examples:"></a>Examples:</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">a</span> = <span class="number">5</span>;</span><br><span class="line"><span class="comment">//a=6; This is Not allowed since a is immutable</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">b</span>=<span class="number">10</span>;</span><br><span class="line">b=<span class="number">11</span>; <span class="comment">//This is fine</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">c</span>= &amp;<span class="keyword">mut</span> b;</span><br><span class="line"><span class="comment">//c=12; This is Not allowed, because c is immutable</span></span><br><span class="line"><span class="comment">//b=12; This is Not allowed because a value can only have one mutable reference which is &#x27;c&#x27;</span></span><br><span class="line">*c=<span class="number">12</span>; <span class="comment">//This is fine</span></span><br><span class="line"><span class="comment">//println!(&quot;value of b is &#123;&#125;&quot;, b);  Not allowed because b is borrowed</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">d</span> = <span class="number">20</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">e</span> = <span class="number">30</span>;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;d is &#123;&#125;, e is &#123;&#125;&quot;</span>, d, e); <span class="comment">// d is 20, e is 30</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">f</span> = &amp;<span class="keyword">mut</span> d; <span class="comment">// f is a mutable reference to the mutable reference of d;</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;f is &#123;&#125;&quot;</span>, f); <span class="comment">//20</span></span><br><span class="line">*f = <span class="number">21</span>;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;f is &#123;&#125;&quot;</span>, f); <span class="comment">//21</span></span><br><span class="line"><span class="comment">//println!(&quot;d is &#123;&#125;, f is &#123;&#125;&quot;, d, f); this is not allowed, f holds the exclusive reference of d, d is temporarily invalid</span></span><br><span class="line">f = &amp;<span class="keyword">mut</span> e;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;f is &#123;&#125;&quot;</span>, f); <span class="comment">//30</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;d is &#123;&#125;, f is &#123;&#125;&quot;</span>, d, f); <span class="comment">// This is fine because f released the reference to d.</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="Meaning-of-mut"><a href="#Meaning-of-mut" class="headerlink" title="Meaning of mut"></a>Meaning of <code>mut</code></h3><ul>
+<li>The declared variable can be modified<ul>
+<li><pre><code class="rust">  lex mut x=5;
+  x=6;
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- ```rust</span><br><span class="line">    let mut a = String::form(&quot;abc&quot;);</span><br><span class="line">    a = String::form(&quot;efg&quot;);</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ul>
+</li>
+<li><code>&amp;mut</code> creats a mutable reference of a value. For example <code>let mut a = &amp;mut b;</code> meaning:<ul>
+<li><code>a</code> would hold the exclusive access to b until <code>a</code> is out of scope.</li>
+<li>The ownership of <code>b</code> will not changed, when <code>a</code> is no longer valid, the exclusive access will return to <code>b</code></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/08/rust-0301-types/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1719,131 +1881,6 @@ This command creates an executable file in target&#x2F;debug&#x2F;hello_cargo, s
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/10/hexo-deployment-issue/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/09/10/hexo-deployment-issue/" itemprop="url">fixing 'Spawn failed' error when deploying hexo with 'hexo deploy' command</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-10T21:02:23+08:00">
-                2024-09-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="The-Error"><a href="#The-Error" class="headerlink" title="The Error"></a>The Error</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">error: RPC failed; HTTP 400 curl 22 The requested URL returned error: 400</span><br><span class="line">send-pack: unexpected disconnect while reading sideband packet</span><br><span class="line">Writing objects: 100% (171/171), 1.22 MiB | 1.41 MiB/s, done.</span><br><span class="line">Total 171 (delta 23), reused 0 (delta 0), pack-reused 0</span><br><span class="line">fatal: the remote end hung up unexpectedly</span><br><span class="line">Everything up-to-date</span><br><span class="line">FATAL Something&#x27;s wrong. Maybe you can find the solution here: https://hexo.io/docs/troubleshooting.html</span><br><span class="line">Error: Spawn failed</span><br><span class="line">    at ChildProcess.&lt;anonymous&gt; (/Users/cdbb/blog/node_modules/hexo-deployer-git/node_modules/hexo-util/lib/spawn.js:51:21)</span><br><span class="line">    at ChildProcess.emit (node:events:518:28)</span><br><span class="line">    at ChildProcess._handle.onexit (node:internal/child_process:294:12)</span><br></pre></td></tr></table></figure>
-
-<h1 id="Fixing"><a href="#Fixing" class="headerlink" title="Fixing"></a>Fixing</h1><p>I first tried looking for fixes on the error ‘Spawn failed<br>at ChildProcess.<anonymous> (&#x2F;Users&#x2F;cdbb&#x2F;blog&#x2F;node_modules&#x2F;hexo-deployer-git&#x2F;node_modules&#x2F;hexo-util&#x2F;lib&#x2F;spawn.js:51:21)’ . But all i got was about deleting the ‘.deploy_git’ folder located in ‘cd &#x2F;usr&#x2F;local&#x2F;src&#x2F;hexo&#x2F;hanyubolg&#x2F;‘, and i could find it.<br>Than i noticed the error ‘error: RPC failed; HTTP 400 curl 22 The requested URL returned error: 400’, and found the answer <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/62753648/rpc-failed-http-400-curl-22-the-requested-url-returned-error-400-bad-request">here</a>:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config http.postBuffer 524288000</span><br></pre></td></tr></table></figure>
-
-<p>and tried <code>hexo g -d</code>, everything went through.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1894,7 +1931,7 @@ This command creates an executable file in target&#x2F;debug&#x2F;hello_cargo, s
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
