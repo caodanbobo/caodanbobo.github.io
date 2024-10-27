@@ -229,6 +229,169 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/08/rust-0303-functions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/10/08/rust-0303-functions/" itemprop="url">Rust lesson 3.3 - Functions</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-08T21:45:53+08:00">
+                2024-10-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Functions-and-Methods"><a href="#Functions-and-Methods" class="headerlink" title="Functions and Methods"></a>Functions and Methods</h1><h2 id="1-Functions"><a href="#1-Functions" class="headerlink" title="1. Functions"></a>1. Functions</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">plus_one</span>(x: <span class="type">i32</span>) <span class="punctuation">-&gt;</span> <span class="type">i32</span> &#123;</span><br><span class="line">    x + <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>fn</code> keyword</li>
+<li>function name: plus_one</li>
+<li><code>x</code> is the parameter, and type of it need be defined explicitly.</li>
+<li><code>-&gt;</code> tells the return type is i32</li>
+<li><code>x+1</code> is an expression, identical to <code>return x+1;</code></li>
+</ul>
+<h2 id="2-Methods"><a href="#2-Methods" class="headerlink" title="2. Methods"></a>2. Methods</h2><p>Methods are similar to functions, while theys are defined within the context of a struct (or an enum or a trait object), and their first parameter is always <strong>self</strong>, which represents the instance of the struct the method is being called on.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    width: <span class="type">u32</span>,</span><br><span class="line">    height: <span class="type">u32</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">area</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">u32</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.width * <span class="keyword">self</span>.height</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">rect1</span> = Rectangle &#123;</span><br><span class="line">        width: <span class="number">30</span>,</span><br><span class="line">        height: <span class="number">50</span>,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(</span><br><span class="line">        <span class="string">&quot;The area of the rectangle is &#123;&#125; square pixels.&quot;</span>,</span><br><span class="line">        rect1.<span class="title function_ invoke__">area</span>()</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Associated-Methods"><a href="#3-Associated-Methods" class="headerlink" title="3. Associated Methods"></a>3. Associated Methods</h2><p>They are functions associated with a type but not tied to any particular instance of that type.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Circle</span> &#123;</span><br><span class="line">    radius: <span class="type">f64</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Circle</span> &#123;</span><br><span class="line">    <span class="comment">// Associated function (static-like method)</span></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">new</span>(radius: <span class="type">f64</span>) <span class="punctuation">-&gt;</span> <span class="keyword">Self</span> &#123;</span><br><span class="line">        Circle &#123; radius &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">pi</span>() <span class="punctuation">-&gt;</span> <span class="type">f64</span> &#123;</span><br><span class="line">        <span class="number">3.1415</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Method that takes `self` (instance method)</span></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">area</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">f64</span> &#123;</span><br><span class="line">        <span class="number">3.1415</span> * <span class="keyword">self</span>.radius * <span class="keyword">self</span>.radius</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="comment">// Calling the associated function</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">circle</span> = Circle::<span class="title function_ invoke__">new</span>(<span class="number">10.0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Calling an instance method on the created instance</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The area of the circle is &#123;&#125;&quot;</span>, circle.<span class="title function_ invoke__">area</span>());</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The PI is &#123;&#125;&quot;</span>, Circle::<span class="title function_ invoke__">pi</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-Trait"><a href="#4-Trait" class="headerlink" title="4. Trait"></a>4. Trait</h2><p>Traits can be used to define shared behavior in an abstract way. They are similar to the idea of ‘interfaces’ in other programming languages.</p>
+<h3 id="4-1-Defining-a-trait"><a href="#4-1-Defining-a-trait" class="headerlink" title="4.1 Defining a trait"></a>4.1 Defining a trait</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">trait</span> <span class="title class_">Summary</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">summarize</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">String</span>;</span><br><span class="line">    <span class="comment">//method with default implementation</span></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">summary_type</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">String</span>&#123;</span><br><span class="line">        <span class="built_in">format!</span>(</span><br><span class="line">        <span class="string">&quot;This is beliong to Summary type,and here is a summary: &#123;&#125;&quot;</span>, <span class="keyword">self</span>.<span class="title function_ invoke__">summarize</span>())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-Implementing-a-trait-on-a-type"><a href="#4-2-Implementing-a-trait-on-a-type" class="headerlink" title="4.2 Implementing a trait on a type"></a>4.2 Implementing a trait on a type</h3><p><strong>Restriction</strong>: to implement a trait on a type, either the trait or the type, or both are local to the crate.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">Tweet</span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> username: <span class="type">String</span>,</span><br><span class="line">    <span class="keyword">pub</span> content: <span class="type">String</span>,</span><br><span class="line">    <span class="keyword">pub</span> reply: <span class="type">bool</span>,</span><br><span class="line">    <span class="keyword">pub</span> retweet: <span class="type">bool</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Summary</span> <span class="keyword">for</span> <span class="title class_">Tweet</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">summarize</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">String</span> &#123;</span><br><span class="line">        <span class="built_in">format!</span>(<span class="string">&quot;&#123;&#125;: &#123;&#125;&quot;</span>, <span class="keyword">self</span>.username, <span class="keyword">self</span>.content)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-Trait-as-Parameters"><a href="#4-3-Trait-as-Parameters" class="headerlink" title="4.3 Trait as Parameters"></a>4.3 Trait as Parameters</h3><h4 id="Trait-Bound-syntax"><a href="#Trait-Bound-syntax" class="headerlink" title="Trait Bound syntax"></a>Trait Bound syntax</h4><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">notify</span>&lt;T: Summary&gt;(item: &amp;T) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Breaking news! &#123;&#125;&quot;</span>, item.<span class="title function_ invoke__">summarize</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// is same as:</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">notify</span>(item: &amp;<span class="keyword">impl</span> <span class="title class_">Summary</span>) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Breaking news! &#123;&#125;&quot;</span>, item.<span class="title function_ invoke__">summarize</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//to narrow down with multiple traits:</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">notify</span>&lt;T: Summary + Display&gt;(item: &amp;T) &#123;&#125;</span><br><span class="line"><span class="comment">//or:</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">notify</span>(item: &amp;(<span class="keyword">impl</span> <span class="title class_">Summary</span>+ Display)) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Trait-Bounds-with-where-clauses"><a href="#Trait-Bounds-with-where-clauses" class="headerlink" title="Trait Bounds with where clauses"></a>Trait Bounds with <code>where</code> clauses</h4><p>Using <code>where</code> improves the readability of codes.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">notify</span>&lt;T&gt;(item: &amp;T)</span><br><span class="line"><span class="keyword">where</span> T: Summary + Display,</span><br><span class="line">&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">some_function</span>&lt;T, U&gt;(t: &amp;T, u: &amp;U) <span class="punctuation">-&gt;</span> <span class="type">i32</span></span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">    T: Display + <span class="built_in">Clone</span>,</span><br><span class="line">    U: <span class="built_in">Clone</span> + <span class="built_in">Debug</span>,</span><br><span class="line">&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-4-Trait-as-Return-Types"><a href="#4-4-Trait-as-Return-Types" class="headerlink" title="4.4 Trait as Return Types"></a>4.4 Trait as Return Types</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">returns_summarizable</span>() <span class="punctuation">-&gt;</span> <span class="keyword">impl</span> <span class="title class_">Summary</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>One thing worth noticing is that <code>impl Summary</code> only allows single return type. e.g., the returns_summarizable can return <code>Tweet</code> only, not other Summary types.</p>
+<p><strong>OR</strong></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">returns_summarizable</span>() <span class="punctuation">-&gt;</span> <span class="type">Box</span>&lt;<span class="keyword">dyn</span> Summary&gt; &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-Control-flows"><a href="#5-Control-flows" class="headerlink" title="5, Control flows"></a>5, Control flows</h2><p>We will cover <code>if</code>, <code>loop</code>, and <code>while loop</code> in the following sections:</p>
+<h3 id="5-1-if"><a href="#5-1-if" class="headerlink" title="5,1 if"></a>5,1 <code>if</code></h3><p><code>if</code> is quite simple, the only thing worth notcing is that the <code>condition</code> has to be a <code>bool</code>.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">number</span> = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> number % <span class="number">4</span> == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;number is divisible by 4&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> number % <span class="number">3</span> == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;number is divisible by 3&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> number % <span class="number">2</span> == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;number is divisible by 2&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;number is not divisible by 4, 3, or 2&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>if</code> can be used as an expression, e.g.,<br>let number &#x3D; if true { 1 } else {0};</p>
+<h3 id="5-2-loop"><a href="#5-2-loop" class="headerlink" title="5.2 loop"></a>5.2 loop</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">num</span>=<span class="number">5</span>;</span><br><span class="line"><span class="keyword">loop</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> num&lt;<span class="number">10</span> &#123;</span><br><span class="line">        num+=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;num is 10 now&quot;</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Using loop label to continue or break to specified loop:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">count</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="symbol">&#x27;counting_up</span>: <span class="keyword">loop</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;count = &#123;count&#125;&quot;</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">remaining</span> = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">loop</span> &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">&quot;remaining = &#123;remaining&#125;&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> remaining == <span class="number">9</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> count == <span class="number">2</span> &#123;</span><br><span class="line">                <span class="keyword">break</span> <span class="symbol">&#x27;counting_up</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            remaining -= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        count += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;End count = &#123;count&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Similar to <code>if</code>, loop can be used as an expression as well.</p>
+<h3 id="5-3-while-loop"><a href="#5-3-while-loop" class="headerlink" title="5.3 while loop"></a>5.3 while loop</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> index &lt; <span class="number">5</span> &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;the value is: &#123;&#125;&quot;</span>, a[index]);</span><br><span class="line"></span><br><span class="line">    index += <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/08/rust-0302-ownership/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1703,184 +1866,6 @@ This command creates an executable file in target&#x2F;debug&#x2F;hello_cargo, s
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/10/Solidity-lesson2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/09/10/Solidity-lesson2/" itemprop="url">Solidity Lesson 2 - Introduction of Testing and Deployment</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-10T22:07:32+08:00">
-                2024-09-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Target-Get-familiar-with-hardhat-testing-and-deployment"><a href="#Target-Get-familiar-with-hardhat-testing-and-deployment" class="headerlink" title="Target: Get familiar with hardhat testing and deployment"></a>Target: Get familiar with hardhat testing and deployment</h1><h2 id="1-Set-up-typescript"><a href="#1-Set-up-typescript" class="headerlink" title="1. Set up typescript"></a>1. Set up typescript</h2><p>We are going to use typescript for its popularity and readability in this whole course.</p>
-<ul>
-<li><p>Let’s install it first:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D ts-node typescript</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Creating the typescript version of config file</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;@nomicfoundation/hardhat-toolbox&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;@nomicfoundation/hardhat-ethers&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> <span class="title class_">Config</span> = <span class="keyword">import</span>(<span class="string">&quot;hardhat/config&quot;</span>).<span class="property">HardhatUserConfig</span>;</span><br><span class="line"><span class="comment">/** <span class="doctag">@type</span> import(&#x27;hardhat/config&#x27;).HardhatUserConfig */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">config</span>: <span class="title class_">Config</span> = &#123;</span><br><span class="line">  <span class="attr">solidity</span>: <span class="string">&quot;0.8.24&quot;</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> config;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Finally, Adding a empty json file ‘tsconfig.json’ under project root, otherwise there will be an error during the typescript execution:</p>
-<p><code>error TS5109: Option &#39;moduleResolution&#39; must be set to &#39;NodeNext&#39; (or left unspecified) when option &#39;module&#39; is set to &#39;NodeNext&#39;.</code></p>
-</li>
-</ul>
-<h2 id="2-Testing"><a href="#2-Testing" class="headerlink" title="2. Testing"></a>2. Testing</h2><ol>
-<li><p>Install ‘mocha’:<br><code>yarn add -D @types/mocha</code></p>
-</li>
-<li><p>create test file under ‘test’ folder</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;@nomicfoundation/hardhat-ethers&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; expect &#125; <span class="keyword">from</span> <span class="string">&quot;chai&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">describe</span>(<span class="string">&quot;HelloWorld&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="title function_">it</span>(<span class="string">&quot;should say hello&quot;</span>, <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="title class_">HelloWorld</span> = <span class="keyword">await</span> ethers.<span class="title function_">getContractFactory</span>(<span class="string">&quot;HelloWorld&quot;</span>);</span><br><span class="line">    <span class="keyword">const</span> helloWorld = <span class="keyword">await</span> <span class="title class_">HelloWorld</span>.<span class="title function_">deploy</span>();</span><br><span class="line">    <span class="keyword">await</span> helloWorld.<span class="title function_">waitForDeployment</span>();</span><br><span class="line"></span><br><span class="line">    <span class="title function_">expect</span>(<span class="keyword">await</span> helloWorld.<span class="title function_">hello</span>()).<span class="property">to</span>.<span class="title function_">equal</span>(<span class="string">&quot;hello world!&quot;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>ethers.getContractFactory(&quot;HelloWorld&quot;)</code>: This retrieves a “contract factory” for the HelloWorld contract. A contract factory is an abstraction that makes it easier to deploy new instances of the contract.</li>
-<li><code>HelloWorld.deploy()</code>: Deploys the contract to the blockchain.</li>
-<li><code>await helloWorld.waitForDeployment()</code>: Waits until the deployment transaction is confirmed.</li>
-</ul>
-</li>
-<li><p>run the test</p>
-<p><code> yarn hart test</code></p>
-</li>
-</ol>
-<h2 id="3-Deployment"><a href="#3-Deployment" class="headerlink" title="3. Deployment"></a>3. Deployment</h2><ol>
-<li><p>create deployment script under ‘scripts’ folder</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;@nomicfoundation/hardhat-ethers&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; ethers &#125; <span class="keyword">from</span> <span class="string">&quot;hardhat&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">deploy</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> <span class="title class_">HelloWorld</span> = <span class="keyword">await</span> ethers.<span class="title function_">getContractFactory</span>(<span class="string">&quot;HelloWorld&quot;</span>);</span><br><span class="line">  <span class="keyword">const</span> helloWorld = <span class="keyword">await</span> <span class="title class_">HelloWorld</span>.<span class="title function_">deploy</span>();</span><br><span class="line">  <span class="keyword">await</span> helloWorld.<span class="title function_">waitForDeployment</span>();</span><br><span class="line">  <span class="keyword">return</span> helloWorld;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">sayHello</span>(<span class="params"><span class="attr">hello</span>: <span class="built_in">any</span></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">await</span> hello.<span class="title function_">hello</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">deploy</span>().<span class="title function_">then</span>(sayHello);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>ethers.getContractFactory(&quot;HelloWorld&quot;)</code>:<ul>
-<li>This retrieves a ContractFactory object for the HelloWorld contract, which is a wrapper around the compiled contract. A ContractFactory is an abstraction used to deploy new smart contracts.</li>
-<li>The “HelloWorld” string references the contract by its name. Hardhat uses the contract’s ABI (Application Binary Interface) and bytecode (compiled form) to create this factory.</li>
-</ul>
-</li>
-<li><code>HelloWorld.deploy()</code>:<ul>
-<li>This function call initiates the deployment of the HelloWorld contract onto the blockchain. It broadcasts a transaction to the Ethereum network (or a local development network in the case of Hardhat), which contains the bytecode of the smart contract.</li>
-<li>Once the contract is deployed, you get an instance of the contract (helloWorld), which represents the deployed contract on-chain(included in the mem-pool).</li>
-</ul>
-</li>
-<li><code>await helloWorld.waitForDeployment();</code>:<ul>
-<li>This waits for the contract deployment transaction to be mined and included in a block. After that, the helloWorld object will be fully initialized and ready to interact with.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>start a local EVM environment</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat node</span><br></pre></td></tr></table></figure></li>
-<li><p>execute the deployment script to publish contracts to the test net</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn hardhat run ./scripts/deploy-hello.ts --network localhost</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="4-Further-reading"><a href="#4-Further-reading" class="headerlink" title="4. Further reading"></a>4. Further reading</h2><ul>
-<li><strong>Hardhat</strong>: The core development environment that runs your project, manages tasks, and handles things like contract compilation, running tests, and connecting to networks.</li>
-<li><strong>@nomicfoundation&#x2F;hardhat-ethers</strong>: A plugin that enhances Hardhat by adding ethers.js functionalities, allowing you to interact with Ethereum in a simple, pre-configured way.</li>
-<li><strong>ethers</strong>: A customized version of ethers that is tightly integrated with Hardhat, not directly from the original ethers.js library.</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1931,7 +1916,7 @@ This command creates an executable file in target&#x2F;debug&#x2F;hello_cargo, s
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

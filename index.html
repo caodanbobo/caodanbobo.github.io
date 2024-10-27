@@ -229,6 +229,164 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/26/rust-0405-trait2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/10/26/rust-0405-trait2/" itemprop="url">Rust lesson 4.5 - Advanced Traits</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-26T20:37:50+08:00">
+                2024-10-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Advanced-Traits"><a href="#Advanced-Traits" class="headerlink" title="Advanced Traits"></a>Advanced Traits</h1><p>We have discussed trait in <a target="_blank" rel="noopener" href="https://caodanbobo.github.io/2024/10/08/rust-0303-functions/">function</a>, let us check out the advanced features of Traits.</p>
+<h2 id="1-Associated-Types"><a href="#1-Associated-Types" class="headerlink" title="1. Associated Types"></a>1. Associated Types</h2><p>Associated types connect a t<strong>ype placeholder</strong> with a trait such that the trait method definitions can use these placeholder types in their signatures.</p>
+<p>In this example, the associate type <code>item</code> is used as the placeholder for return type.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">trait</span> <span class="title class_">Iterator</span> &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Item</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">next</span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">Option</span>&lt;<span class="keyword">Self</span>::Item&gt;;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Iterator</span> <span class="keyword">for</span> <span class="title class_">Counter</span> &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Item</span> = <span class="type">u32</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">next</span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">Option</span>&lt;<span class="keyword">Self</span>::Item&gt; &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This can be done by generics as well:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">trait</span> <span class="title class_">Iterator</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">next</span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">Option</span>&lt;T&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>There difference between these two is:</p>
+<ul>
+<li>Traits with generics can be implemented multiple times for each concrete types.</li>
+<li>With associated types, we can only implement a trait once on a type.</li>
+</ul>
+<h2 id="2-Default-Generic-Type-Parameters-and-Operator-Overloading"><a href="#2-Default-Generic-Type-Parameters-and-Operator-Overloading" class="headerlink" title="2. Default Generic Type Parameters and Operator Overloading"></a>2. Default Generic Type Parameters and Operator Overloading</h2><p>When declaring the trait, we can specift a default concrete type as default as Parameters type with <code>&lt;PlaceholderType=ConcreteType&gt;</code> syntax.</p>
+<p>Following codes is Trait <code>std::ops::Add</code>, it also an example showing us how to overloading operator defined in <code>std::ops</code>.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">trait</span> <span class="title class_">Add</span>&lt;Rhs = <span class="keyword">Self</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Output</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Required method</span></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">add</span>(<span class="keyword">self</span>, rhs: Rhs) <span class="punctuation">-&gt;</span> <span class="keyword">Self</span>::Output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>whem implemt it on <code>Point</code>, the second parameter of ‘add’ is also <code>Point</code> itself:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ops::Add;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Debug, Copy, Clone, PartialEq)]</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    x: <span class="type">i32</span>,</span><br><span class="line">    y: <span class="type">i32</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//impl Add&lt;Point&gt; for Poing</span></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Add</span> <span class="keyword">for</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Output</span> = Point;</span><br><span class="line">    <span class="comment">// Point as Self</span></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">add</span>(<span class="keyword">self</span>, other: Point) <span class="punctuation">-&gt;</span> Point &#123;</span><br><span class="line">        Point &#123;</span><br><span class="line">            x: <span class="keyword">self</span>.x + other.x,</span><br><span class="line">            y: <span class="keyword">self</span>.y + other.y,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>And the default type can be replaced as well:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ops::Add;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Millimeters</span>(<span class="type">u32</span>);</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Meters</span>(<span class="type">u32</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Add</span>&lt;Meters&gt; <span class="keyword">for</span> <span class="title class_">Millimeters</span> &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Output</span> = Millimeters;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">add</span>(<span class="keyword">self</span>, other: Meters) <span class="punctuation">-&gt;</span> Millimeters &#123;</span><br><span class="line">        <span class="title function_ invoke__">Millimeters</span>(<span class="keyword">self</span>.<span class="number">0</span> + (other.<span class="number">0</span> * <span class="number">1000</span>))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The <code>Rhs</code> type is customized to <code>Meters</code>.</p>
+<h2 id="3-Fully-Qualified-Syntax"><a href="#3-Fully-Qualified-Syntax" class="headerlink" title="3. Fully Qualified Syntax"></a>3. Fully Qualified Syntax</h2><p>Sometimes, There are methods or functions from different traits sharing same name. How do we distinguish them from each other?</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">trait</span> <span class="title class_">Pilot</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">fly</span>(&amp;<span class="keyword">self</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">trait</span> <span class="title class_">Wizard</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">fly</span>(&amp;<span class="keyword">self</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Human</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Pilot</span> <span class="keyword">for</span> <span class="title class_">Human</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">fly</span>(&amp;<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;This is your captain speaking.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Wizard</span> <span class="keyword">for</span> <span class="title class_">Human</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">fly</span>(&amp;<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;Up!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Human</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">fly</span>(&amp;<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;*waving arms furiously*&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In this example, There are 3 <code>fly</code> methods in <code>Human</code>, and we can use the trait name to clarify the one we want to call:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">person</span> = Human;</span><br><span class="line">    Pilot::<span class="title function_ invoke__">fly</span>(&amp;person); <span class="comment">//This is your captain speaking.</span></span><br><span class="line">    Wizard::<span class="title function_ invoke__">fly</span>(&amp;person);<span class="comment">//Up!</span></span><br><span class="line">    person.<span class="title function_ invoke__">fly</span>(); <span class="comment">//waving arms furiously</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>However, the associate functions wound not work like this with trait name, fully qualified syntax is required:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">trait</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">baby_name</span>() <span class="punctuation">-&gt;</span> <span class="type">String</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Dog</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Dog</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">baby_name</span>() <span class="punctuation">-&gt;</span> <span class="type">String</span> &#123;</span><br><span class="line">        <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;Spot&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Animal</span> <span class="keyword">for</span> <span class="title class_">Dog</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">baby_name</span>() <span class="punctuation">-&gt;</span> <span class="type">String</span> &#123;</span><br><span class="line">        <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;puppy&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;A baby dog is called a &#123;&#125;&quot;</span>, Dog::<span class="title function_ invoke__">baby_name</span>()); <span class="comment">//Spot</span></span><br><span class="line">    <span class="comment">//this next line will not work</span></span><br><span class="line">    <span class="comment">//println!(&quot;A baby dog is called a &#123;&#125;&quot;, Animal::baby_name());</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;A baby dog is called a &#123;&#125;&quot;</span>, &lt;Dog <span class="keyword">as</span> Animal&gt;::<span class="title function_ invoke__">baby_name</span>()); <span class="comment">//puppy</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-Supertraits"><a href="#4-Supertraits" class="headerlink" title="4. Supertraits"></a>4. Supertraits</h2><p>if we want to add extra functionalities on another trait, the trait is relied on is call <em>supertrait</em>.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fmt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">trait</span> <span class="title class_">OutlinePrint</span>: fmt::Display &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">outline_print</span>(&amp;<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">output</span> = <span class="keyword">self</span>.<span class="title function_ invoke__">to_string</span>();</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">len</span> = output.<span class="title function_ invoke__">len</span>();</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, <span class="string">&quot;*&quot;</span>.<span class="title function_ invoke__">repeat</span>(len + <span class="number">4</span>));</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;*&#123;&#125;*&quot;</span>, <span class="string">&quot; &quot;</span>.<span class="title function_ invoke__">repeat</span>(len + <span class="number">2</span>));</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;* &#123;output&#125; *&quot;</span>);</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;*&#123;&#125;*&quot;</span>, <span class="string">&quot; &quot;</span>.<span class="title function_ invoke__">repeat</span>(len + <span class="number">2</span>));</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, <span class="string">&quot;*&quot;</span>.<span class="title function_ invoke__">repeat</span>(len + <span class="number">4</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>we create a trait <code>OutlinePrint</code> relying on <code>fmt::Display</code> which provides <code>to_string</code> method.</p>
+<p>To implement this <code>OutlinePrint</code>, the type must implement the <code>fmt::Display</code>:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fmt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    x: <span class="type">i32</span>,</span><br><span class="line">    y: <span class="type">i32</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">fmt</span>::Display <span class="keyword">for</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">fmt</span>(&amp;<span class="keyword">self</span>, f: &amp;<span class="keyword">mut</span> fmt::Formatter) <span class="punctuation">-&gt;</span> fmt::<span class="type">Result</span> &#123;</span><br><span class="line">        <span class="built_in">write!</span>(f, <span class="string">&quot;(&#123;&#125;, &#123;&#125;)&quot;</span>, <span class="keyword">self</span>.x, <span class="keyword">self</span>.y)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">OutlinePrint</span> <span class="keyword">for</span> <span class="title class_">Point</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/22/rust-0404-rc&refcell/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1621,159 +1779,6 @@ As we mentioned in in the ownership chapter, the exclusive access to <code>x </c
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/08/rust-0303-functions/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/10/08/rust-0303-functions/" itemprop="url">Rust lesson 3.3 - Functions</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-08T21:45:53+08:00">
-                2024-10-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Functions-and-Methods"><a href="#Functions-and-Methods" class="headerlink" title="Functions and Methods"></a>Functions and Methods</h1><h2 id="1-Functions"><a href="#1-Functions" class="headerlink" title="1. Functions"></a>1. Functions</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">plus_one</span>(x: <span class="type">i32</span>) <span class="punctuation">-&gt;</span> <span class="type">i32</span> &#123;</span><br><span class="line">    x + <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>fn</code> keyword</li>
-<li>function name: plus_one</li>
-<li><code>x</code> is the parameter, and type of it need be defined explicitly.</li>
-<li><code>-&gt;</code> tells the return type is i32</li>
-<li><code>x+1</code> is an expression, identical to <code>return x+1;</code></li>
-</ul>
-<h2 id="2-Methods"><a href="#2-Methods" class="headerlink" title="2. Methods"></a>2. Methods</h2><p>Methods are similar to functions, while theys are defined within the context of a struct (or an enum or a trait object), and their first parameter is always <strong>self</strong>, which represents the instance of the struct the method is being called on.</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    width: <span class="type">u32</span>,</span><br><span class="line">    height: <span class="type">u32</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">area</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">u32</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.width * <span class="keyword">self</span>.height</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">rect1</span> = Rectangle &#123;</span><br><span class="line">        width: <span class="number">30</span>,</span><br><span class="line">        height: <span class="number">50</span>,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(</span><br><span class="line">        <span class="string">&quot;The area of the rectangle is &#123;&#125; square pixels.&quot;</span>,</span><br><span class="line">        rect1.<span class="title function_ invoke__">area</span>()</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-Associated-Methods"><a href="#3-Associated-Methods" class="headerlink" title="3. Associated Methods"></a>3. Associated Methods</h2><p>They are functions associated with a type but not tied to any particular instance of that type.</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Circle</span> &#123;</span><br><span class="line">    radius: <span class="type">f64</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Circle</span> &#123;</span><br><span class="line">    <span class="comment">// Associated function (static-like method)</span></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">new</span>(radius: <span class="type">f64</span>) <span class="punctuation">-&gt;</span> <span class="keyword">Self</span> &#123;</span><br><span class="line">        Circle &#123; radius &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">pi</span>() <span class="punctuation">-&gt;</span> <span class="type">f64</span> &#123;</span><br><span class="line">        <span class="number">3.1415</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Method that takes `self` (instance method)</span></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">area</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">f64</span> &#123;</span><br><span class="line">        <span class="number">3.1415</span> * <span class="keyword">self</span>.radius * <span class="keyword">self</span>.radius</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="comment">// Calling the associated function</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">circle</span> = Circle::<span class="title function_ invoke__">new</span>(<span class="number">10.0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Calling an instance method on the created instance</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The area of the circle is &#123;&#125;&quot;</span>, circle.<span class="title function_ invoke__">area</span>());</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The PI is &#123;&#125;&quot;</span>, Circle::<span class="title function_ invoke__">pi</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-Trait"><a href="#4-Trait" class="headerlink" title="4. Trait"></a>4. Trait</h2><p>Traits can be used to define shared behavior in an abstract way. They are similar to the idea of ‘interfaces’ in other programming languages.</p>
-<h3 id="4-1-Defining-a-trait"><a href="#4-1-Defining-a-trait" class="headerlink" title="4.1 Defining a trait"></a>4.1 Defining a trait</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">trait</span> <span class="title class_">Summary</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">summarize</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">String</span>;</span><br><span class="line">    <span class="comment">//method with default implementation</span></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">summary_type</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">String</span>&#123;</span><br><span class="line">        <span class="string">&quot;This is beliong to Summary type&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-2-Implementing-a-trait-on-a-type"><a href="#4-2-Implementing-a-trait-on-a-type" class="headerlink" title="4.2 Implementing a trait on a type"></a>4.2 Implementing a trait on a type</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">Tweet</span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> username: <span class="type">String</span>,</span><br><span class="line">    <span class="keyword">pub</span> content: <span class="type">String</span>,</span><br><span class="line">    <span class="keyword">pub</span> reply: <span class="type">bool</span>,</span><br><span class="line">    <span class="keyword">pub</span> retweet: <span class="type">bool</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Summary</span> <span class="keyword">for</span> <span class="title class_">Tweet</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">summarize</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">String</span> &#123;</span><br><span class="line">        <span class="built_in">format!</span>(<span class="string">&quot;&#123;&#125;: &#123;&#125;&quot;</span>, <span class="keyword">self</span>.username, <span class="keyword">self</span>.content)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-3-Trait-Bound-Syntax"><a href="#4-3-Trait-Bound-Syntax" class="headerlink" title="4.3 Trait Bound Syntax"></a>4.3 Trait Bound Syntax</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">notify</span>&lt;T: Summary&gt;(item: &amp;T) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Breaking news! &#123;&#125;&quot;</span>, item.<span class="title function_ invoke__">summarize</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// is same as:</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">notify</span>(item: &amp;<span class="keyword">impl</span> <span class="title class_">Summary</span>) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Breaking news! &#123;&#125;&quot;</span>, item.<span class="title function_ invoke__">summarize</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//to narrow down with multiple traits:</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">notify</span>&lt;T: Summary + Display&gt;(item: &amp;T) &#123;&#125;</span><br><span class="line"><span class="comment">//or:</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">notify</span>(item: &amp;(<span class="keyword">impl</span> <span class="title class_">Summary</span>+ Display)) &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="5-Control-flows"><a href="#5-Control-flows" class="headerlink" title="5, Control flows"></a>5, Control flows</h2><p>We will cover <code>if</code>, <code>loop</code>, and <code>while loop</code> in the following sections:</p>
-<h3 id="5-1-if"><a href="#5-1-if" class="headerlink" title="5,1 if"></a>5,1 <code>if</code></h3><p><code>if</code> is quite simple, the only thing worth notcing is that the <code>condition</code> has to be a <code>bool</code>.</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">number</span> = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> number % <span class="number">4</span> == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;number is divisible by 4&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> number % <span class="number">3</span> == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;number is divisible by 3&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> number % <span class="number">2</span> == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;number is divisible by 2&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;number is not divisible by 4, 3, or 2&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>if</code> can be used as an expression, e.g.,<br>let number &#x3D; if true { 1 } else {0};</p>
-<h3 id="5-2-loop"><a href="#5-2-loop" class="headerlink" title="5.2 loop"></a>5.2 loop</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">num</span>=<span class="number">5</span>;</span><br><span class="line"><span class="keyword">loop</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> num&lt;<span class="number">10</span> &#123;</span><br><span class="line">        num+=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;num is 10 now&quot;</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Using loop label to continue or break to specified loop:</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">count</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="symbol">&#x27;counting_up</span>: <span class="keyword">loop</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;count = &#123;count&#125;&quot;</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">remaining</span> = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">loop</span> &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">&quot;remaining = &#123;remaining&#125;&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> remaining == <span class="number">9</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> count == <span class="number">2</span> &#123;</span><br><span class="line">                <span class="keyword">break</span> <span class="symbol">&#x27;counting_up</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            remaining -= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        count += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;End count = &#123;count&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Similar to <code>if</code>, loop can be used as an expression as well.</p>
-<h3 id="5-3-while-loop"><a href="#5-3-while-loop" class="headerlink" title="5.3 while loop"></a>5.3 while loop</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> index &lt; <span class="number">5</span> &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;the value is: &#123;&#125;&quot;</span>, a[index]);</span><br><span class="line"></span><br><span class="line">    index += <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1824,7 +1829,7 @@ As we mentioned in in the ownership chapter, the exclusive access to <code>x </c
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
