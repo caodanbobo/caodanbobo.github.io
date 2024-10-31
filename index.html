@@ -229,7 +229,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/26/rust-0405-trait2/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/31/rust-0407-closures/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -248,7 +248,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2024/10/26/rust-0405-trait2/" itemprop="url">Rust lesson 4.5 - Advanced Traits</a></h1>
+                <a class="post-title-link" href="/2024/10/31/rust-0407-closures/" itemprop="url">Rust lesson 4.7 - Closures</a></h1>
         
 
         <div class="post-meta">
@@ -260,8 +260,158 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-26T20:37:50+08:00">
-                2024-10-26
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-31T21:31:37+08:00">
+                2024-10-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Closures"><a href="#Closures" class="headerlink" title="Closures"></a>Closures</h1><p>Closures are anonymous functions in rust, and they:</p>
+<ul>
+<li>can be saved in a variable</li>
+<li>can be used as arguments in other functions</li>
+<li>can capture values from the environment</li>
+<li>type annotations are not required, compiler can infer the types from the context most times.</li>
+</ul>
+<h2 id="1-Capturing-the-Environment-with-Closures"><a href="#1-Capturing-the-Environment-with-Closures" class="headerlink" title="1. Capturing the Environment with Closures"></a>1. Capturing the Environment with Closures</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>()&#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">equal_to_x</span>= |n| n==x; <span class="comment">// the closure awares the &#x27;x&#x27;</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">y</span>=<span class="number">4</span>;</span><br><span class="line">    <span class="built_in">assert!</span>(<span class="title function_ invoke__">equal_to_x</span>(y));</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-Closure-Type-Inference-and-Annotation"><a href="#2-Closure-Type-Inference-and-Annotation" class="headerlink" title="2. Closure Type Inference and Annotation"></a>2. Closure Type Inference and Annotation</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span>  <span class="title function_">add_one_v1</span>   (x: <span class="type">u32</span>) <span class="punctuation">-&gt;</span> <span class="type">u32</span> &#123; x + <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">add_one_v2</span> = |x: <span class="type">u32</span>| <span class="punctuation">-&gt;</span> <span class="type">u32</span> &#123; x + <span class="number">1</span> &#125;;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">add_one_v3</span> = |x|             &#123; x + <span class="number">1</span> &#125;;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">add_one_v4</span> = |x|               x + <span class="number">1</span>  ;</span><br></pre></td></tr></table></figure>
+
+<p>Compiler can infer the types of parameters and return types most cases, however, compiler will infer one concrete type for each.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">example_closure</span> = |x| x;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">s</span> = <span class="title function_ invoke__">example_closure</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hello&quot;</span>)); <span class="comment">//the type of the closure is String from now on.</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">n</span> = <span class="title function_ invoke__">example_closure</span>(<span class="number">5</span>); <span class="comment">//won&#x27;t work.</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Capturing-References-or-Moving-Ownership"><a href="#3-Capturing-References-or-Moving-Ownership" class="headerlink" title="3. Capturing References or Moving Ownership"></a>3. Capturing References or Moving Ownership</h2><p>Closures can capture values form their in three ways:</p>
+<ul>
+<li>borrowing immutably</li>
+<li>borrowing mutably</li>
+<li>taking ownership</li>
+</ul>
+<p>And the closure <strong>itself</strong> will decide which to use.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">list</span> = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Before defining closure: &#123;list:?&#125;&quot;</span>);</span><br><span class="line">    <span class="comment">//the parameter need to declared first!</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">only_borrows</span> = || <span class="built_in">println!</span>(<span class="string">&quot;From closure: &#123;list:?&#125;&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Before calling closure: &#123;list:?&#125;&quot;</span>);</span><br><span class="line">    <span class="title function_ invoke__">only_borrows</span>();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;After calling closure: &#123;list:?&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">list</span> = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Before defining closure: &#123;list:?&#125;&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">borrows_mutably</span> = || list.<span class="title function_ invoke__">push</span>(<span class="number">7</span>);</span><br><span class="line"></span><br><span class="line">    <span class="title function_ invoke__">borrows_mutably</span>();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;After calling closure: &#123;list:?&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Taking-the-ownership"><a href="#Taking-the-ownership" class="headerlink" title="Taking the ownership"></a>Taking the ownership</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">x</span> = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;x = &#123;:?&#125;&quot;</span>, x);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">equal_to_x</span> = <span class="keyword">move</span> |n| n == x; <span class="comment">// x is moved to the clousre</span></span><br><span class="line"><span class="comment">//println!(&quot;x = &#123;:?&#125;&quot;, x); this is invalid</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">y</span> = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="built_in">assert!</span>(<span class="title function_ invoke__">equal_to_x</span>(y));</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-Moving-Captured-Values-Out-of-Closures-and-the-Fn-Traits"><a href="#4-Moving-Captured-Values-Out-of-Closures-and-the-Fn-Traits" class="headerlink" title="4. Moving Captured Values Out of Closures and the Fn Traits"></a>4. Moving Captured Values Out of Closures and the Fn Traits</h2><p>How the closure’s body handles the values determines the way it capture the values. Specificly, which traits the closure implements.</p>
+<ol>
+<li><code>FnOnce</code>: move values out of its body, once only.</li>
+<li><code>FnMut</code>: mutate the captured values, more that once.</li>
+<li><code>Fn</code>: immutate the captured values, or capture nothing; multiple times concurrently</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/30/rust-0405-traits_2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/10/30/rust-0405-traits_2/" itemprop="url">Rust lesson 4.5 - Advanced Traits</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-30T20:04:13+08:00">
+                2024-10-30
               </time>
             
 
@@ -339,6 +489,162 @@
 <p>we create a trait <code>OutlinePrint</code> relying on <code>fmt::Display</code> which provides <code>to_string</code> method.</p>
 <p>To implement this <code>OutlinePrint</code>, the type must implement the <code>fmt::Display</code>:</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fmt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    x: <span class="type">i32</span>,</span><br><span class="line">    y: <span class="type">i32</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">fmt</span>::Display <span class="keyword">for</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">fmt</span>(&amp;<span class="keyword">self</span>, f: &amp;<span class="keyword">mut</span> fmt::Formatter) <span class="punctuation">-&gt;</span> fmt::<span class="type">Result</span> &#123;</span><br><span class="line">        <span class="built_in">write!</span>(f, <span class="string">&quot;(&#123;&#125;, &#123;&#125;)&quot;</span>, <span class="keyword">self</span>.x, <span class="keyword">self</span>.y)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">OutlinePrint</span> <span class="keyword">for</span> <span class="title class_">Point</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/26/rust-0406-Macros/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/10/26/rust-0406-Macros/" itemprop="url">Rust lesson 4.6 - Macros</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-26T20:37:50+08:00">
+                2024-10-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Macros"><a href="#Macros" class="headerlink" title="Macros"></a>Macros</h1><ul>
+<li><em>declarative</em><ul>
+<li><code>macro_rules!</code></li>
+</ul>
+</li>
+<li><em>procedural</em><ul>
+<li>Custom <code>#[derive]</code> macros</li>
+<li>Attribute-like macros</li>
+<li>Function-like macros</li>
+</ul>
+</li>
+</ul>
+<h2 id="1-What-are-macros"><a href="#1-What-are-macros" class="headerlink" title="1. What are macros"></a>1. What are macros</h2><p>A way of writing code that writes other code, aka. <em>metaprogramming</em>. For example:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">v</span>: <span class="type">Vec</span>&lt;<span class="type">u32</span>&gt; = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//vec![1, 2, 3] would be replaced by following block</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">temp_vec</span> = <span class="type">Vec</span>::<span class="title function_ invoke__">new</span>();</span><br><span class="line">    temp_vec.<span class="title function_ invoke__">push</span>(<span class="number">1</span>);</span><br><span class="line">    temp_vec.<span class="title function_ invoke__">push</span>(<span class="number">2</span>);</span><br><span class="line">    temp_vec.<span class="title function_ invoke__">push</span>(<span class="number">3</span>);</span><br><span class="line">    temp_vec</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In addition, camparing to functions, macros:</p>
+<ul>
+<li>Operate at compile time, they can produce code that implements traits for type</li>
+<li>can take a variable number of parameters</li>
+<li>must be defined or brought into scope before you call them in a file</li>
+</ul>
+<h2 id="2-Declarative-Macros"><a href="#2-Declarative-Macros" class="headerlink" title="2. Declarative Macros"></a>2. Declarative Macros</h2><p>Let us check out <code>vec!</code> under the hood.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[macro_export]</span></span><br><span class="line"><span class="built_in">macro_rules!</span> vec &#123;</span><br><span class="line">    ( $( $x:expr ),* ) =&gt; &#123;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">temp_vec</span> = <span class="type">Vec</span>::<span class="title function_ invoke__">new</span>();</span><br><span class="line">            $(</span><br><span class="line">                temp_vec.<span class="title function_ invoke__">push</span>($x);</span><br><span class="line">            )*</span><br><span class="line">            temp_vec</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>#[macro_export]</code> indicates that this macros will be available for code brought the crate.</li>
+<li><code>macro_rules! vec&#123;&#125;</code> defines the macro.</li>
+<li><code>()=&gt;&#123;&#125;</code> is smililar to the pattern in <code>match</code> flow, but it matchs against the syntax.</li>
+<li><code>&amp;</code> is for variable that the code matching the pattern</li>
+<li><code>$x:expr</code> indicates this is a pattern for expression, and naming it <code>$x</code>.</li>
+<li><code>$( $x:expr ),*</code> is the pattern that matches code with multiple expression separated by ‘,’.</li>
+<li><code>$()*</code> inside the arm is generated for each part matches <code>$()</code>.</li>
+</ul>
+<h2 id="3-Procedural-Macros"><a href="#3-Procedural-Macros" class="headerlink" title="3. Procedural Macros"></a>3. Procedural Macros</h2><p>Procedural macros accept some code as an input, operate on that code, and produce some code as an output.</p>
+<h3 id="3-1-Custom-derive-Macro"><a href="#3-1-Custom-derive-Macro" class="headerlink" title="3.1 Custom derive Macro"></a>3.1 Custom derive Macro</h3><p>Used to implement traits for structs or enums automatically by adding <code>#[derive(TraitName)]</code>. These macros are marked with <code>#[proc_macro_derive]</code> and are often used for common traits like Debug or Clone, but custom derive macros can be created to automate repetitive implementations.</p>
+<h3 id="3-2-Attribute-like-Macro"><a href="#3-2-Attribute-like-Macro" class="headerlink" title="3.2 Attribute-like Macro"></a>3.2 Attribute-like Macro</h3><p>These are applied to items like functions or modules with <code>#[proc_macro_attribute]</code>. They allow you to add custom attributes that modify the behavior of the decorated item.</p>
+<h3 id="3-1-Function-like-Macro"><a href="#3-1-Function-like-Macro" class="headerlink" title="3.1 Function-like Macro"></a>3.1 Function-like Macro</h3><p>These resemble functions and can be used anywhere you’d use a regular function call. They are defined with <code>#[proc_macro]</code> and are commonly used for code generation based on input.</p>
 
           
         
@@ -1470,315 +1776,6 @@ As we mentioned in in the ownership chapter, the exclusive access to <code>x </c
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/10/rust-0305-enum2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/10/10/rust-0305-enum2/" itemprop="url">Rust lesson 3.5 - Option and Result</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-10T21:50:41+08:00">
-                2024-10-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Option-and-Result"><a href="#Option-and-Result" class="headerlink" title="Option and Result"></a>Option and Result</h1><h2 id="1-Option"><a href="#1-Option" class="headerlink" title="1. Option&lt;T&gt;"></a>1. <code>Option&lt;T&gt;</code></h2><p>There is no concept of ‘NULL’ in rust, and it is not a good practice anyway. <code>Option&lt;T&gt;</code> is came up to represent the two opposite status of the T: present(<code>Some(t)</code>) and absent (<code>None</code>).</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">some_number</span> = <span class="title function_ invoke__">Some</span>(<span class="number">5</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">some_char</span> = <span class="title function_ invoke__">Some</span>(<span class="string">&#x27;e&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">absent_number</span>: <span class="type">Option</span>&lt;<span class="type">i32</span>&gt; = <span class="literal">None</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Common-used-methods-of-Option"><a href="#Common-used-methods-of-Option" class="headerlink" title="Common used methods of Option"></a>Common used methods of Option</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//unwrap()</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">some_number</span> = <span class="title function_ invoke__">Some</span>(<span class="number">5</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">absent_value</span>: <span class="type">Option</span>&lt;<span class="type">i32</span>&gt; = <span class="literal">None</span>; <span class="comment">// this will not panic now</span></span><br><span class="line"><span class="comment">// println!(</span></span><br><span class="line"><span class="comment">//     &quot;This will panic since value &#123;&#125; is absent&quot;,</span></span><br><span class="line"><span class="comment">//     absent_value.unwrap()</span></span><br><span class="line"><span class="comment">// );</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//expect()</span></span><br><span class="line"><span class="comment">// println!(</span></span><br><span class="line"><span class="comment">//     &quot;This will never be displayed &#123;&#125;&quot;,</span></span><br><span class="line"><span class="comment">//     absent_value.expect(&quot;panic more verbose&quot;)</span></span><br><span class="line"><span class="comment">// );</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//is_some() and is_none() are opposite</span></span><br><span class="line"><span class="keyword">if</span> some_number.<span class="title function_ invoke__">is_some</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;some is &#123;&#125;&quot;</span>, some_number.<span class="title function_ invoke__">unwrap</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//map() allows to process the value and return the result, the &#x27;result&#x27; and the &#x27;value&#x27; can be different types</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">simple_string</span>: <span class="type">Option</span>&lt;<span class="type">String</span>&gt; = <span class="title function_ invoke__">Some</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;abc&quot;</span>));</span><br><span class="line"><span class="keyword">let</span> <span class="variable">len</span>: <span class="type">Option</span>&lt;<span class="type">usize</span>&gt; = simple_string.<span class="title function_ invoke__">map</span>(|s| s.<span class="title function_ invoke__">len</span>()); <span class="comment">// len is 3</span></span><br><span class="line"><span class="built_in">assert_eq!</span>(len, <span class="title function_ invoke__">Some</span>(<span class="number">3</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">absent_string</span>: <span class="type">Option</span>&lt;<span class="type">String</span>&gt; = <span class="literal">None</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">len</span>: <span class="type">Option</span>&lt;<span class="type">usize</span>&gt; = absent_string.<span class="title function_ invoke__">map</span>(|s| s.<span class="title function_ invoke__">len</span>()); <span class="comment">// len is None</span></span><br><span class="line"><span class="built_in">assert_eq!</span>(len, <span class="literal">None</span>);</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-Result"><a href="#2-Result" class="headerlink" title="2. Result&lt;T&gt;"></a>2. <code>Result&lt;T&gt;</code></h2><p>Most errors aren’t serious enough to require the program to stop entirely. e.g., wrong password from a user should not stop the program.</p>
-<p>Result enum is defined as having two variants, Ok and Err, as follows:</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">Result</span>&lt;T, E&gt; &#123;</span><br><span class="line">    <span class="title function_ invoke__">Ok</span>(T),</span><br><span class="line">    <span class="title function_ invoke__">Err</span>(E),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>T: the type of the value that will be returned in a success case</li>
-<li>E: the type of the error that will be returned in a failure case</li>
-</ul>
-<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">greeting_file_result</span> = File::<span class="title function_ invoke__">open</span>(<span class="string">&quot;hello.txt&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">greeting_file</span> = <span class="keyword">match</span> greeting_file_result &#123;</span><br><span class="line">        <span class="title function_ invoke__">Ok</span>(file) =&gt; file,</span><br><span class="line">        <span class="title function_ invoke__">Err</span>(error) =&gt; <span class="built_in">panic!</span>(<span class="string">&quot;Problem opening the file: &#123;error:?&#125;&quot;</span>),</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>In this example, T is <code>File</code> and E is <code>String</code>.</p>
-<p>In most cases, the <code>Result</code> is used as a return type to propagate the result to the function caller as follows:</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"><span class="keyword">use</span> std::io::&#123;<span class="keyword">self</span>, Read&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">read_username_from_file</span>() <span class="punctuation">-&gt;</span> <span class="type">Result</span>&lt;<span class="type">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">username_file_result</span> = File::<span class="title function_ invoke__">open</span>(<span class="string">&quot;hello.txt&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">username_file</span> = <span class="keyword">match</span> username_file_result &#123;</span><br><span class="line">        <span class="title function_ invoke__">Ok</span>(file) =&gt; file,</span><br><span class="line">        <span class="title function_ invoke__">Err</span>(e) =&gt; <span class="keyword">return</span> <span class="title function_ invoke__">Err</span>(e),</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="as-a-shorthand-for-result-propagation"><a href="#as-a-shorthand-for-result-propagation" class="headerlink" title="? as a shorthand for result propagation"></a><code>? </code>as a shorthand for result propagation</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">read_username_from_file</span>() <span class="punctuation">-&gt;</span> <span class="type">Result</span>&lt;<span class="type">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">username</span> = <span class="type">String</span>::<span class="title function_ invoke__">new</span>();</span><br><span class="line">    <span class="comment">// if there is an error, the &#x27;?&#x27; would propagate it, continue execution otherwise.</span></span><br><span class="line">    File::<span class="title function_ invoke__">open</span>(<span class="string">&quot;hello.txt&quot;</span>)?.<span class="title function_ invoke__">read_to_string</span>(&amp;<span class="keyword">mut</span> username)?;</span><br><span class="line"></span><br><span class="line">    <span class="title function_ invoke__">Ok</span>(username)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Common-used-methods-of-Result"><a href="#Common-used-methods-of-Result" class="headerlink" title="Common used methods of Result"></a>Common used methods of Result</h3><p>As you can see they are quite similar to the Option’s methods.</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">some_number</span>: <span class="type">Result</span>&lt;<span class="type">i32</span>, &amp;<span class="type">str</span>&gt; = <span class="title function_ invoke__">Ok</span>(<span class="number">5</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">absent_value</span>: <span class="type">Result</span>&lt;<span class="type">i32</span>, &amp;<span class="type">str</span>&gt; = <span class="title function_ invoke__">Err</span>(<span class="string">&quot;This is error&quot;</span>);</span><br><span class="line"><span class="comment">//this will panic!</span></span><br><span class="line"><span class="comment">// println!(</span></span><br><span class="line"><span class="comment">//     &quot;This will panic since value &#123;&#125; is absent&quot;,</span></span><br><span class="line"><span class="comment">//     absent_value.unwrap()</span></span><br><span class="line"><span class="comment">// );</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//expect()</span></span><br><span class="line"><span class="comment">// println!(</span></span><br><span class="line"><span class="comment">//     &quot;This will never be displayed &#123;&#125;&quot;,</span></span><br><span class="line"><span class="comment">//     absent_value.expect(&quot;panic more verbose&quot;)</span></span><br><span class="line"><span class="comment">// );</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//is_some() and is_none() are opposite</span></span><br><span class="line"><span class="keyword">if</span> some_number.<span class="title function_ invoke__">is_ok</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;some is &#123;&#125;&quot;</span>, some_number.<span class="title function_ invoke__">unwrap</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//map() allows to process the value and return the result, the &#x27;result&#x27; and the &#x27;value&#x27; can be different types</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">simple_string</span> = <span class="title function_ invoke__">Ok</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;abc&quot;</span>));</span><br><span class="line"><span class="keyword">let</span> <span class="variable">len</span>: <span class="type">Result</span>&lt;<span class="type">usize</span>, &amp;<span class="type">str</span>&gt; = simple_string.<span class="title function_ invoke__">map</span>(|s| s.<span class="title function_ invoke__">len</span>()); <span class="comment">// len is 3</span></span><br><span class="line"><span class="built_in">assert_eq!</span>(len, <span class="title function_ invoke__">Ok</span>(<span class="number">3</span> <span class="keyword">as</span> <span class="type">usize</span>));</span><br><span class="line"><span class="keyword">let</span> <span class="variable">absent_string</span>: <span class="type">Result</span>&lt;<span class="type">String</span>, &amp;<span class="type">str</span>&gt; = <span class="title function_ invoke__">Err</span>(<span class="string">&quot;This is not a string&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">len</span> = absent_string.<span class="title function_ invoke__">map</span>(|s| s.<span class="title function_ invoke__">len</span>());</span><br><span class="line"><span class="built_in">assert_eq!</span>(len, <span class="title function_ invoke__">Err</span>(<span class="string">&quot;This is not a string&quot;</span>));</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-Conversion-between-Option-and-Result"><a href="#3-Conversion-between-Option-and-Result" class="headerlink" title="3. Conversion between Option and Result"></a>3. Conversion between Option and Result</h2><h3 id="3-1-Option-Result"><a href="#3-1-Option-Result" class="headerlink" title="3.1 Option &#x3D;&gt; Result"></a>3.1 Option &#x3D;&gt; Result</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">opt</span>: <span class="type">Option</span>&lt;<span class="type">i32</span>&gt; = <span class="title function_ invoke__">Some</span>(<span class="number">42</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">res</span>: <span class="type">Result</span>&lt;<span class="type">i32</span>, &amp;<span class="type">str</span>&gt; = opt.<span class="title function_ invoke__">ok_or</span>(<span class="string">&quot;Error: no value found&quot;</span>);<span class="comment">// res is Ok(42)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">opt</span>: <span class="type">Option</span>&lt;<span class="type">i32</span>&gt; = <span class="literal">None</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">res</span>: <span class="type">Result</span>&lt;<span class="type">i32</span>, &amp;<span class="type">str</span>&gt; = opt.<span class="title function_ invoke__">ok_or</span>(<span class="string">&quot;Error: no value found&quot;</span>);<span class="comment">// res is Err(&quot;Error: no value found&quot;)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">opt</span>: <span class="type">Option</span>&lt;<span class="type">i32</span>&gt; = <span class="literal">None</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">res</span>: <span class="type">Result</span>&lt;<span class="type">i32</span>, <span class="type">String</span>&gt; = opt.<span class="title function_ invoke__">ok_or_else</span>(|| <span class="string">&quot;Generated error&quot;</span>.<span class="title function_ invoke__">to_string</span>());<span class="comment">// res is Err(&quot;Generated error&quot;)</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="3-2-Result-Option"><a href="#3-2-Result-Option" class="headerlink" title="3.2 Result &#x3D;&gt; Option"></a>3.2 Result &#x3D;&gt; Option</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">res</span>: <span class="type">Result</span>&lt;<span class="type">i32</span>, &amp;<span class="type">str</span>&gt; = <span class="title function_ invoke__">Ok</span>(<span class="number">42</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">opt</span>: <span class="type">Option</span>&lt;<span class="type">i32</span>&gt; = res.<span class="title function_ invoke__">ok</span>();<span class="comment">// opt is Some(42)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">res</span>: <span class="type">Result</span>&lt;<span class="type">i32</span>, &amp;<span class="type">str</span>&gt; = <span class="title function_ invoke__">Err</span>(<span class="string">&quot;An error occurred&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">opt</span>: <span class="type">Option</span>&lt;<span class="type">i32</span>&gt; = res.<span class="title function_ invoke__">ok</span>();<span class="comment">// opt is None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">res</span>: <span class="type">Result</span>&lt;<span class="type">i32</span>, &amp;<span class="type">str</span>&gt; = <span class="title function_ invoke__">Err</span>(<span class="string">&quot;An error occurred&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">opt</span>: <span class="type">Option</span>&lt;&amp;<span class="type">str</span>&gt; = res.<span class="title function_ invoke__">err</span>();<span class="comment">// opt is Some(&quot;An error occurred&quot;)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">res</span>: <span class="type">Result</span>&lt;<span class="type">i32</span>, &amp;<span class="type">str</span>&gt; = <span class="title function_ invoke__">Ok</span>(<span class="number">42</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">opt</span>: <span class="type">Option</span>&lt;&amp;<span class="type">str</span>&gt; = res.<span class="title function_ invoke__">err</span>();<span class="comment">// opt is None</span></span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/09/rust-0304-enum/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/10/09/rust-0304-enum/" itemprop="url">Rust lesson 3.4 - Enum</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-09T20:28:32+08:00">
-                2024-10-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Enum-101"><a href="#Enum-101" class="headerlink" title="Enum 101"></a>Enum 101</h1><h2 id="1-Defining-an-Enum"><a href="#1-Defining-an-Enum" class="headerlink" title="1. Defining an Enum"></a>1. Defining an Enum</h2><p>Enum allows you to define a set of values.</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">Message</span> &#123;</span><br><span class="line">    Quit,</span><br><span class="line">    Move &#123; x: <span class="type">i32</span>, y: <span class="type">i32</span> &#125;, <span class="comment">// like a struct</span></span><br><span class="line">    <span class="title function_ invoke__">Write</span>(<span class="type">String</span>), <span class="comment">// string</span></span><br><span class="line">    <span class="title function_ invoke__">ChangeColor</span>(<span class="type">i32</span>, <span class="type">i32</span>, <span class="type">i32</span>), <span class="comment">// tuple</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Memory-layout-of-enums"><a href="#Memory-layout-of-enums" class="headerlink" title="Memory layout of enums"></a>Memory layout of enums</h2><ol>
-<li>Discriminant(1 byte*):<ul>
-<li>Rust stores a discriminant for each enum. This is an integer representing which variant is currently active.(Quit: 0, Move: 1…)</li>
-<li>By default, Rust uses a u8 for the discriminant, as long as the enum has fewer than 256 variants.<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1. In this example, there are no variants.However, the size of it is 2 bytes, because the discriminant is more than 255</span></span><br><span class="line">   <span class="keyword">enum</span> <span class="title class_">EnumA</span> &#123;</span><br><span class="line">       A = <span class="number">255</span>,</span><br><span class="line">       B,</span><br><span class="line">   <span class="comment">// B&#x27;s discriminant is 256, since the discriminant values</span></span><br><span class="line">   <span class="comment">//are typically consecutive integers</span></span><br><span class="line">   &#125;</span><br><span class="line"><span class="comment">//2. In this example, the size of EnumB is 0, because of Single-variant enum optimization</span></span><br><span class="line">   <span class="keyword">enum</span> <span class="title class_">EnumB</span> &#123;</span><br><span class="line">       A = <span class="number">256</span>,</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li>Variants<ul>
-<li>this is the size of the variant’s value, e.g., <code>Move</code> has two i32 values, each of which is 4bytes, 8bytes in total.</li>
-<li>Rust will align the enum to the size of its largest variant for efficient access.</li>
-</ul>
-</li>
-</ol>
-<p>In Rust, the size of an enum is typically determined by its largest variant. For example, consider an enum <code>Message</code> that includes variants such as <code>Write</code>, <code>Quit</code>, and <code>Move</code>.</p>
-<ul>
-<li>The <code>Write</code> variant might consist of a discriminant (usually 1 byte) and a <code>String</code> (which may vary in size, but let’s assume it uses 24 bytes for this explanation). Therefore, theoretically, the size of <code>Message</code> could be expected to be 25 bytes.</li>
-</ul>
-<p><strong>However</strong>, in practice, Rust uses a technique known as <strong>niche optimization</strong>. This means that if some of the variants are small or can share memory efficiently, the Rust compiler can optimize the size of the enum.</p>
-<p>For instance, because the <code>Quit</code> and <code>Move</code> variants are small and can be represented with fewer bits, the actual size of the <code>Message</code> enum may be reduced to 24 bytes instead of the expected 25. This optimization allows Rust to pack these variants more efficiently in memory, thus saving space.</p>
-<p>The size of a String</p>
-<ul>
-<li>a pointer:8 bytes on a 64-bit system</li>
-<li>length: 8 bytes</li>
-<li>capacity: 8 bytes</li>
-</ul>
-<h2 id="2-Option-and-Result"><a href="#2-Option-and-Result" class="headerlink" title="2. Option and Result"></a>2. Option and Result</h2><p>They enums defined by the standard library.</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">Option</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="literal">None</span>,</span><br><span class="line">    <span class="title function_ invoke__">Some</span>(T),</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">Result</span>&lt;T, E&gt; &#123;</span><br><span class="line">    <span class="title function_ invoke__">Ok</span>(T),</span><br><span class="line">    <span class="title function_ invoke__">Err</span>(E),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-match-Control-Flow"><a href="#3-match-Control-Flow" class="headerlink" title="3. match Control Flow"></a>3. match Control Flow</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">Coin</span> &#123;</span><br><span class="line">    Penny,</span><br><span class="line">    Nickel,</span><br><span class="line">    Dime,</span><br><span class="line">    Quarter,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">value_in_cents</span>(coin: Coin) <span class="punctuation">-&gt;</span> <span class="type">u8</span> &#123;</span><br><span class="line">    <span class="keyword">match</span> coin &#123;</span><br><span class="line">        Coin::Penny =&gt; <span class="number">1</span>,</span><br><span class="line">        Coin::Nickel =&gt; <span class="number">5</span>,</span><br><span class="line">        Coin::Dime =&gt; <span class="number">10</span>,</span><br><span class="line">        Coin::Quarter =&gt; <span class="number">25</span>,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>There are some important features of match:</p>
-<ul>
-<li>Catch-all pattern: the match arms need to cover all possible value, if we don’t want to list all: we can use a special pattern:<ul>
-<li><code>other</code>: match other possible value</li>
-<li><code>-</code>: match any value</li>
-</ul>
-</li>
-<li><code>match</code> is also an expression and can be used to value assignment</li>
-<li><code>match</code> can be used with non-enum types as well</li>
-</ul>
-<h2 id="4-if-let"><a href="#4-if-let" class="headerlink" title="4. if let"></a>4. <code>if let</code></h2><p>A concise version of <code>match</code></p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//using match</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">count</span> = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">match</span> coin &#123;</span><br><span class="line">    Coin::<span class="title function_ invoke__">Quarter</span>(state) =&gt; <span class="built_in">println!</span>(<span class="string">&quot;State quarter from &#123;state:?&#125;!&quot;</span>),</span><br><span class="line">    _ =&gt; count += <span class="number">1</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//using if let</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">count</span> = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> <span class="variable">Coin</span>::<span class="title function_ invoke__">Quarter</span>(state) = coin &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;State quarter from &#123;state:?&#125;!&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    count += <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1829,7 +1826,7 @@ As we mentioned in in the ownership chapter, the exclusive access to <code>x </c
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

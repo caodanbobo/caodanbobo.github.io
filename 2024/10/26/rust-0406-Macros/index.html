@@ -79,15 +79,15 @@
 
 
 
-<meta name="description" content="My First Post is right here That’s one small step for man, one giant leap for web3  Just kidding. Enjoy coding ^^.">
+<meta name="description" content="Macros declarative macro_rules!   procedural Custom #[derive] macros Attribute-like macros Function-like macros    1. What are macrosA way of writing code that writes other code, aka. metaprogramming.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello Web3">
-<meta property="og:url" content="http://example.com/2024/09/09/first-post/index.html">
+<meta property="og:title" content="Rust lesson 4.6 - Macros">
+<meta property="og:url" content="http://example.com/2024/10/26/rust-0406-Macros/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="My First Post is right here That’s one small step for man, one giant leap for web3  Just kidding. Enjoy coding ^^.">
+<meta property="og:description" content="Macros declarative macro_rules!   procedural Custom #[derive] macros Attribute-like macros Function-like macros    1. What are macrosA way of writing code that writes other code, aka. metaprogramming.">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2024-09-09T13:10:32.960Z">
-<meta property="article:modified_time" content="2024-09-09T13:17:49.490Z">
+<meta property="article:published_time" content="2024-10-26T12:37:50.047Z">
+<meta property="article:modified_time" content="2024-10-31T13:43:15.844Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/2024/09/09/first-post/"/>
+  <link rel="canonical" href="http://example.com/2024/10/26/rust-0406-Macros/"/>
 
 
 
 
 
-  <title>Hello Web3 | Hexo</title>
+  <title>Rust lesson 4.6 - Macros | Hexo</title>
   
 
 
@@ -232,7 +232,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/09/first-post/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/26/rust-0406-Macros/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -249,7 +249,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Hello Web3</h1>
+          <h1 class="post-title" itemprop="name headline">Rust lesson 4.6 - Macros</h1>
         
 
         <div class="post-meta">
@@ -261,8 +261,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-09-09T21:10:32+08:00">
-                2024-09-09
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-26T20:37:50+08:00">
+                2024-10-26
               </time>
             
 
@@ -299,10 +299,43 @@
       
 
       
-        <h1 id="My-First-Post-is-right-here"><a href="#My-First-Post-is-right-here" class="headerlink" title="My First Post is right here"></a>My First Post is right here</h1><blockquote>
-<p>That’s one small step for man, one giant leap for web3</p>
-</blockquote>
-<p>Just kidding. Enjoy coding ^^.</p>
+        <h1 id="Macros"><a href="#Macros" class="headerlink" title="Macros"></a>Macros</h1><ul>
+<li><em>declarative</em><ul>
+<li><code>macro_rules!</code></li>
+</ul>
+</li>
+<li><em>procedural</em><ul>
+<li>Custom <code>#[derive]</code> macros</li>
+<li>Attribute-like macros</li>
+<li>Function-like macros</li>
+</ul>
+</li>
+</ul>
+<h2 id="1-What-are-macros"><a href="#1-What-are-macros" class="headerlink" title="1. What are macros"></a>1. What are macros</h2><p>A way of writing code that writes other code, aka. <em>metaprogramming</em>. For example:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">v</span>: <span class="type">Vec</span>&lt;<span class="type">u32</span>&gt; = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//vec![1, 2, 3] would be replaced by following block</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">temp_vec</span> = <span class="type">Vec</span>::<span class="title function_ invoke__">new</span>();</span><br><span class="line">    temp_vec.<span class="title function_ invoke__">push</span>(<span class="number">1</span>);</span><br><span class="line">    temp_vec.<span class="title function_ invoke__">push</span>(<span class="number">2</span>);</span><br><span class="line">    temp_vec.<span class="title function_ invoke__">push</span>(<span class="number">3</span>);</span><br><span class="line">    temp_vec</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In addition, camparing to functions, macros:</p>
+<ul>
+<li>Operate at compile time, they can produce code that implements traits for type</li>
+<li>can take a variable number of parameters</li>
+<li>must be defined or brought into scope before you call them in a file</li>
+</ul>
+<h2 id="2-Declarative-Macros"><a href="#2-Declarative-Macros" class="headerlink" title="2. Declarative Macros"></a>2. Declarative Macros</h2><p>Let us check out <code>vec!</code> under the hood.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[macro_export]</span></span><br><span class="line"><span class="built_in">macro_rules!</span> vec &#123;</span><br><span class="line">    ( $( $x:expr ),* ) =&gt; &#123;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">temp_vec</span> = <span class="type">Vec</span>::<span class="title function_ invoke__">new</span>();</span><br><span class="line">            $(</span><br><span class="line">                temp_vec.<span class="title function_ invoke__">push</span>($x);</span><br><span class="line">            )*</span><br><span class="line">            temp_vec</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>#[macro_export]</code> indicates that this macros will be available for code brought the crate.</li>
+<li><code>macro_rules! vec&#123;&#125;</code> defines the macro.</li>
+<li><code>()=&gt;&#123;&#125;</code> is smililar to the pattern in <code>match</code> flow, but it matchs against the syntax.</li>
+<li><code>&amp;</code> is for variable that the code matching the pattern</li>
+<li><code>$x:expr</code> indicates this is a pattern for expression, and naming it <code>$x</code>.</li>
+<li><code>$( $x:expr ),*</code> is the pattern that matches code with multiple expression separated by ‘,’.</li>
+<li><code>$()*</code> inside the arm is generated for each part matches <code>$()</code>.</li>
+</ul>
+<h2 id="3-Procedural-Macros"><a href="#3-Procedural-Macros" class="headerlink" title="3. Procedural Macros"></a>3. Procedural Macros</h2><p>Procedural macros accept some code as an input, operate on that code, and produce some code as an output.</p>
+<h3 id="3-1-Custom-derive-Macro"><a href="#3-1-Custom-derive-Macro" class="headerlink" title="3.1 Custom derive Macro"></a>3.1 Custom derive Macro</h3><p>Used to implement traits for structs or enums automatically by adding <code>#[derive(TraitName)]</code>. These macros are marked with <code>#[proc_macro_derive]</code> and are often used for common traits like Debug or Clone, but custom derive macros can be created to automate repetitive implementations.</p>
+<h3 id="3-2-Attribute-like-Macro"><a href="#3-2-Attribute-like-Macro" class="headerlink" title="3.2 Attribute-like Macro"></a>3.2 Attribute-like Macro</h3><p>These are applied to items like functions or modules with <code>#[proc_macro_attribute]</code>. They allow you to add custom attributes that modify the behavior of the decorated item.</p>
+<h3 id="3-1-Function-like-Macro"><a href="#3-1-Function-like-Macro" class="headerlink" title="3.1 Function-like Macro"></a>3.1 Function-like Macro</h3><p>These resemble functions and can be used anywhere you’d use a regular function call. They are defined with <code>#[proc_macro]</code> and are commonly used for code generation based on input.</p>
 
       
     </div>
@@ -327,8 +360,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2024/09/09/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/2024/10/22/rust-0404-rc&refcell/" rel="next" title="Rust lesson 4.4 - Smart Pointer II">
+                <i class="fa fa-chevron-left"></i> Rust lesson 4.4 - Smart Pointer II
               </a>
             
           </div>
@@ -337,8 +370,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2024/09/09/Solidity-lesson1/" rel="prev" title="Solidity Lesson 1 - Enviroment Setup">
-                Solidity Lesson 1 - Enviroment Setup <i class="fa fa-chevron-right"></i>
+              <a href="/2024/10/30/rust-0405-traits_2/" rel="prev" title="Rust lesson 4.5 - Advanced Traits">
+                Rust lesson 4.5 - Advanced Traits <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -453,7 +486,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#My-First-Post-is-right-here"><span class="nav-number">1.</span> <span class="nav-text">My First Post is right here</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Macros"><span class="nav-number">1.</span> <span class="nav-text">Macros</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-What-are-macros"><span class="nav-number">1.1.</span> <span class="nav-text">1. What are macros</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Declarative-Macros"><span class="nav-number">1.2.</span> <span class="nav-text">2. Declarative Macros</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Procedural-Macros"><span class="nav-number">1.3.</span> <span class="nav-text">3. Procedural Macros</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-Custom-derive-Macro"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 Custom derive Macro</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Attribute-like-Macro"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 Attribute-like Macro</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-Function-like-Macro"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.1 Function-like Macro</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
