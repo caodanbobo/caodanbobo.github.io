@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Writing Tests1. Unit testsWhenever we make a new library project with Cargo, a test module with a test function in it is automatically generated for us. 1234567891011121314pub fn add(left: usize, righ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust lesson 4.9 - Testing">
+<meta property="og:url" content="http://example.com/2024/11/07/rust-0409-test/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Writing Tests1. Unit testsWhenever we make a new library project with Cargo, a test module with a test function in it is automatically generated for us. 1234567891011121314pub fn add(left: usize, righ">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-11-07T13:01:06.636Z">
+<meta property="article:modified_time" content="2024-11-10T07:35:34.931Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2024/11/07/rust-0409-test/"/>
+
+
+
+
+
+  <title>Rust lesson 4.9 - Testing | Hexo</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/07/rust-0409-test/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Rust lesson 4.9 - Testing</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-11-07T21:01:06+08:00">
+                2024-11-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Writing-Tests"><a href="#Writing-Tests" class="headerlink" title="Writing Tests"></a>Writing Tests</h1><h2 id="1-Unit-tests"><a href="#1-Unit-tests" class="headerlink" title="1. Unit tests"></a>1. Unit tests</h2><p>Whenever we make a new library project with Cargo, a test module with a test function in it is automatically generated for us.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">add</span>(left: <span class="type">usize</span>, right: <span class="type">usize</span>) <span class="punctuation">-&gt;</span> <span class="type">usize</span> &#123;</span><br><span class="line">    left + right</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[cfg(test)]</span></span><br><span class="line"><span class="keyword">mod</span> tests &#123;</span><br><span class="line">    <span class="keyword">use</span> super::*;</span><br><span class="line"></span><br><span class="line">    <span class="meta">#[test]</span></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">it_works</span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">result</span> = <span class="title function_ invoke__">add</span>(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line">        <span class="built_in">assert_eq!</span>(result, <span class="number">4</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In this code, the test mod ‘tests’ is generated by rust, and a test function ‘it_works’ as well.</p>
+<p>We can create more test mods using <code>#[cfg(test)]</code> annotation, and create test function with <code>#[test]</code> annotation inside test mods.</p>
+<p>The <code>use super::*;</code> indicates we can use everything definded in this crate.</p>
+<h3 id="checking-test-results"><a href="#checking-test-results" class="headerlink" title="checking test results"></a>checking test results</h3><h4 id="1-assert"><a href="#1-assert" class="headerlink" title="1. assert!"></a>1. <code>assert</code>!</h4><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[test]</span></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">add_works</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">result</span> = <span class="title function_ invoke__">add</span>(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line">    <span class="comment">//assert_eq!(result, 4);</span></span><br><span class="line">    <span class="built_in">assert!</span>(result == <span class="number">4</span>, <span class="string">&quot;passed&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-Expecting-panics"><a href="#2-Expecting-panics" class="headerlink" title="2. Expecting panics"></a>2. Expecting panics</h4><p>Sometimes, our test is expected to fail with panic as follow:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[test]</span></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">add_not_works</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">result</span>: <span class="type">usize</span> = <span class="title function_ invoke__">add</span>(<span class="type">usize</span>::MAX, <span class="type">usize</span>::MAX);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>#[should_panic]</code> can be used here to let the test pass with panic.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[test]</span></span><br><span class="line"><span class="meta">#[should_panic]</span></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">add_not_works</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">result</span>: <span class="type">usize</span> = <span class="title function_ invoke__">add</span>(<span class="type">usize</span>::MAX, <span class="type">usize</span>::MAX);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>To be more specific, we can check the expected panic messages:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[test]</span></span><br><span class="line"><span class="meta">#[should_panic(expected=<span class="string">&quot;expected message&quot;</span>)]</span></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">test_panic</span>() &#123;</span><br><span class="line">    <span class="built_in">panic!</span>(<span class="string">&quot;actual message&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>For the unimplement code,especially,in test-driven development, we can ignore the test function with <code>#[ignore]</code></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[test]</span></span><br><span class="line"><span class="meta">#[ignore]</span></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">not_code_yet</span>() &#123;</span><br><span class="line">    todo!();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-Using-Result-in-Tests"><a href="#3-Using-Result-in-Tests" class="headerlink" title="3. Using Result&lt;T, E&gt; in Tests"></a>3. Using <code>Result&lt;T, E&gt;</code> in Tests</h4><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[test]</span></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">it_works</span>() <span class="punctuation">-&gt;</span> <span class="type">Result</span>&lt;(), <span class="type">String</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">result</span> = <span class="title function_ invoke__">add</span>(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">4</span> &#123;</span><br><span class="line">        <span class="title function_ invoke__">Ok</span>(())</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="title function_ invoke__">Err</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;two plus two does not equal four&quot;</span>))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-Integration-tests"><a href="#2-Integration-tests" class="headerlink" title="2. Integration tests"></a>2. Integration tests</h2><p>To create an Integration test, We create a tests directory at the top level of our project directory, next to src. And then we put a <code>integration.rs</code> inside ‘test’.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">adder</span><br><span class="line">├── Cargo.lock</span><br><span class="line">├── Cargo.toml</span><br><span class="line">├── src</span><br><span class="line">│   └── lib.rs</span><br><span class="line">└── tests</span><br><span class="line">    └── integration.rs</span><br></pre></td></tr></table></figure>
+
+<p>The <code>integration.rs</code> is our integration test file, and we can create as many as we need, each file in the tests directory is compiled as its own separate crate.</p>
+<h3 id="Submodules-in-Integration-Tests"><a href="#Submodules-in-Integration-Tests" class="headerlink" title="Submodules in Integration Tests"></a>Submodules in Integration Tests</h3><p>To create shared submodules, we need to use the old convention we learnt before.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">├── Cargo.lock</span><br><span class="line">├── Cargo.toml</span><br><span class="line">├── src</span><br><span class="line">│   └── lib.rs</span><br><span class="line">└── tests</span><br><span class="line">    ├── common</span><br><span class="line">    │   └── mod.rs</span><br><span class="line">    └── integration_test.rs</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> test_publish_cdbb::add;</span><br><span class="line"><span class="keyword">mod</span> common;</span><br><span class="line"><span class="meta">#[test]</span></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">it_adds_two</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> (a, b) = common::<span class="title function_ invoke__">setup</span>(); <span class="comment">//function from common</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">res</span> = <span class="title function_ invoke__">add</span>(a, b);</span><br><span class="line">    <span class="built_in">assert_eq!</span>(res, <span class="number">7</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Doc-tests"><a href="#3-Doc-tests" class="headerlink" title="3. Doc-tests"></a>3. Doc-tests</h2><p>Accurately documenting your packages will help other users know how and when to use them. Rust also included doc-tests in the test command, and we can preview the documentation by running <code>cargo doc --open</code></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// substract number A by number B</span></span><br><span class="line"><span class="comment">/// # Examples</span></span><br><span class="line"><span class="comment">/// ```rust</span></span><br><span class="line"><span class="comment">/// assert_eq!(test_publish_cdbb::substract(2,1),1)</span></span><br><span class="line"><span class="comment">/// ```</span></span><br><span class="line"><span class="comment">/// # Panics</span></span><br><span class="line"><span class="comment">/// ```should_panic</span></span><br><span class="line"><span class="comment">/// test_publish_cdbb::substract(1,2);</span></span><br><span class="line"><span class="comment">/// ```</span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">substract</span>(left: <span class="type">usize</span>, right: <span class="type">usize</span>) <span class="punctuation">-&gt;</span> <span class="type">usize</span> &#123;</span><br><span class="line">    left - right</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In this example, it shows us documentation comments use <code>///</code>, and we can use <code>#</code> to organize our documentation. Here are some commonly used sections:</p>
+<ol>
+<li><strong>Panics</strong>: The scenarios in which the function being documented could panic.</li>
+<li><strong>Errors</strong>: If the function returns a Result, describing the kinds of errors that might occur and what conditions might cause those errors to be returned can be helpful to callers so they can write code to handle the different kinds of errors in different ways.</li>
+<li><strong>Safety</strong>: If the function is unsafe to call , there should be a section explaining why the function is unsafe and covering the invariants that the function expects callers to uphold.</li>
+</ol>
+<h2 id="4-Test-commands"><a href="#4-Test-commands" class="headerlink" title="4. Test commands"></a>4. Test commands</h2><p>Running <code>cargo test</code>:</p>
+<ul>
+<li>unit tests</li>
+<li>integration tests</li>
+<li>doc-tests</li>
+</ul>
+<p>Running <code>cargo test -- --show-output</code> would print values for passing tests as well.</p>
+<p>Running <code>cargo test [TEST_NAME]</code> would filter out the other tests. <code>TEST_NAME</code> could be the fullname or part of the fullname.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2024/11/03/rust-0408-concurrency/" rel="next" title="Rust lesson 4.8 - Concurrency">
+                <i class="fa fa-chevron-left"></i> Rust lesson 4.8 - Concurrency
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Writing-Tests"><span class="nav-number">1.</span> <span class="nav-text">Writing Tests</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Unit-tests"><span class="nav-number">1.1.</span> <span class="nav-text">1. Unit tests</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#checking-test-results"><span class="nav-number">1.1.1.</span> <span class="nav-text">checking test results</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-assert"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">1. assert!</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Expecting-panics"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">2. Expecting panics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Using-Result-in-Tests"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">3. Using Result&lt;T, E&gt; in Tests</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Integration-tests"><span class="nav-number">1.2.</span> <span class="nav-text">2. Integration tests</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Submodules-in-Integration-Tests"><span class="nav-number">1.2.1.</span> <span class="nav-text">Submodules in Integration Tests</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Doc-tests"><span class="nav-number">1.3.</span> <span class="nav-text">3. Doc-tests</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Test-commands"><span class="nav-number">1.4.</span> <span class="nav-text">4. Test commands</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
