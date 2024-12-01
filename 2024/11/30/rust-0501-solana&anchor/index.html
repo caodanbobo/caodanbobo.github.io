@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Solana Basics1. Account ModelSolana Account Model 2. Program AccountsThe CodeHere is a simple solnana program coded in anchor: 123456789101112131415161718192021222324252627use anchor_lang::prelude::*;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust lesson 5.1 - Solana Dev with Anchor">
+<meta property="og:url" content="http://example.com/2024/11/30/rust-0501-solana&anchor/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Solana Basics1. Account ModelSolana Account Model 2. Program AccountsThe CodeHere is a simple solnana program coded in anchor: 123456789101112131415161718192021222324252627use anchor_lang::prelude::*;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://solana-developer-content.vercel.app/assets/docs/core/accounts/program-account-expanded.svg">
+<meta property="og:image" content="https://solana-developer-content.vercel.app/assets/docs/core/accounts/data-account.svg">
+<meta property="og:image" content="https://solana-developer-content.vercel.app/assets/docs/core/pda/pda-derivation.svg">
+<meta property="article:published_time" content="2024-11-30T12:12:30.455Z">
+<meta property="article:modified_time" content="2024-12-01T12:37:06.309Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://solana-developer-content.vercel.app/assets/docs/core/accounts/program-account-expanded.svg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2024/11/30/rust-0501-solana&anchor/"/>
+
+
+
+
+
+  <title>Rust lesson 5.1 - Solana Dev with Anchor | Hexo</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/30/rust-0501-solana&anchor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Rust lesson 5.1 - Solana Dev with Anchor</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-11-30T20:12:30+08:00">
+                2024-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Solana-Basics"><a href="#Solana-Basics" class="headerlink" title="Solana Basics"></a>Solana Basics</h1><h2 id="1-Account-Model"><a href="#1-Account-Model" class="headerlink" title="1. Account Model"></a>1. Account Model</h2><p><a target="_blank" rel="noopener" href="https://solana.com/docs/core/accounts">Solana Account Model</a></p>
+<h2 id="2-Program-Accounts"><a href="#2-Program-Accounts" class="headerlink" title="2. Program Accounts"></a>2. Program Accounts</h2><h3 id="The-Code"><a href="#The-Code" class="headerlink" title="The Code"></a>The Code</h3><p>Here is a simple solnana program coded in anchor:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> anchor_lang::prelude::*;</span><br><span class="line">declare_id!(<span class="string">&quot;77xw1CSDzm1G6b554gf5GwbC2P2B4qLH6jPqzBSMZCcx&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">#[program]</span></span><br><span class="line"><span class="keyword">mod</span> hello_anchor &#123;</span><br><span class="line">    <span class="keyword">use</span> super::*;</span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">initialize</span>(ctx: Context&lt;Initialize&gt;, data: <span class="type">u64</span>) <span class="punctuation">-&gt;</span> <span class="type">Result</span>&lt;()&gt; &#123;</span><br><span class="line">        ctx.accounts.new_account.data = data;</span><br><span class="line">        msg!(<span class="string">&quot;Changed data to: &#123;&#125;!&quot;</span>, data);</span><br><span class="line">        <span class="title function_ invoke__">Ok</span>(())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Accounts)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">Initialize</span>&lt;<span class="symbol">&#x27;info</span>&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">#[account(init, payer = signer, space = 8 + 8)]</span></span><br><span class="line">    <span class="keyword">pub</span> new_account: Account&lt;<span class="symbol">&#x27;info</span>, NewAccount&gt;,</span><br><span class="line">    <span class="meta">#[account(mut)]</span></span><br><span class="line">    <span class="keyword">pub</span> signer: Signer&lt;<span class="symbol">&#x27;info</span>&gt;,</span><br><span class="line">    <span class="keyword">pub</span> system_program: Program&lt;<span class="symbol">&#x27;info</span>, System&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[account]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">NewAccount</span> &#123;</span><br><span class="line">    data: <span class="type">u64</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This piece of code contains 4 parts:</p>
+<ol>
+<li>The <code>declare_id!</code> macro specifies the on-chain address of your program.</li>
+<li>The <code>#[program]</code> macro annotates a module containing functions that represent the program’s instructions. In other words, this is the logic of the program.</li>
+<li>The <code>#[derive(Accounts)]</code> macro is used to define a struct that specifies the accounts required for a particular instruction, where each field represents a separate account. In the example, to invoke <code>fn initialize</code>, we need to prepare all acconts defined in struct <code>Initialize</code></li>
+<li>The <code>#[account]</code> macro is used to define a struct that represents the data structure of an account created and owned by the program.</li>
+</ol>
+<p>In brife:</p>
+<ol>
+<li>The <code>#[account]</code> defines the data struct used in the solana program account(smart contract).</li>
+<li>We can use functions in mod annotated with <code>#[program]</code> to munipulte the data.</li>
+<li>However, to invoke certain function, we need to get ready all the accounts it need as <code>#[derive(Accounts)</code> required.</li>
+</ol>
+<h3 id="Deploying-Programs-on-chain"><a href="#Deploying-Programs-on-chain" class="headerlink" title="Deploying Programs on-chain"></a>Deploying Programs on-chain</h3><p><a target="_blank" rel="noopener" href="https://explorer.solana.com/tx/vmJMGRb2fxePtZpPvnE1JEEYxd4BR2uc1vMiDzkdEsYL3CT4QXgLMFMT6QEjXFR482ontMDBReEquBf376qtBzR?cluster=devnet">Here is the transation of deploying the program.</a></p>
+<p>We can see there several accounts in Account input(s) sections, let us see what are those:</p>
+<ol>
+<li><p><code>DK1RcxQV5pcWetBxpkp3C82B2oALMnFWzsZKPASHMYC5</code></p>
+<p>This is my public key, it’s marked as <code>payer, signer, writable</code>:</p>
+<ul>
+<li>payer, paying for transaction fee and program account rent fee</li>
+<li>Signs the transaction to authorize it</li>
+<li>writable because Solana deducts funds from this account</li>
+</ul>
+</li>
+<li><p><code>FMN5VwtrXqjMem3NX5Di6WVgFgi8d63jyBJ5BMSZfoZ6</code></p>
+<p>This is the account of the program we just deployed.</p>
+</li>
+<li><p><code>HzvKq6MNEQgMEbVkVZE46sLagAasLe3Ah2GFMZGUVw7M</code></p>
+<p>Program’s Program Executable Data Account, storing program’s codes.</p>
+</li>
+<li><p><code>n8bf7TJfB6NUZYwbruXP2MbQ49Fxw3ARKKjDZMLep71</code></p>
+<p>Buffer account used during the deployment, so it is no longer existed.</p>
+</li>
+<li><p><code>BPFLoaderUpgradeab1e11111111111111111111111</code><br>A special system program that facilitates deploying and upgrading BPF programs on Solana.</p>
+</li>
+<li><p>sysvar: clock and sysvar: rent.</p>
+</li>
+</ol>
+<p>Exactly what we learnt in <a target="_blank" rel="noopener" href="https://solana.com/docs/core/accounts">Solana Account Model</a>:</p>
+<blockquote>
+<p>When new programs are deployed on Solana, technically three separate accounts are created:</p>
+<ul>
+<li><strong>Program Account</strong>:The main account representing an on-chain program. This account stores the address of an executable data account (which stores the compiled program code) and the update authority for the program (address authorized to make changes to the program).</li>
+<li><strong>Program Executable Data Account</strong>: An account that contains the executable byte code of the program.</li>
+<li><strong>Buffer Account</strong>: A temporary account that stores byte code while a program is being actively deployed or upgraded. Once the process is complete, the data is transferred to the Program Executable Data Account and the buffer account is closed._</li>
+</ul>
+</blockquote>
+<p><img src="https://solana-developer-content.vercel.app/assets/docs/core/accounts/program-account-expanded.svg" alt="alt text"></p>
+<h2 id="3-Interacting-with-On-chain-Programs"><a href="#3-Interacting-with-On-chain-Programs" class="headerlink" title="3. Interacting with On-chain Programs"></a>3. Interacting with On-chain Programs</h2><p>let’s use the test script to show you how to interact with the program:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// No imports needed: web3, anchor, pg and more are globally available</span></span><br><span class="line"></span><br><span class="line"><span class="title function_">describe</span>(<span class="string">&quot;Test&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">it</span>(<span class="string">&quot;initialize&quot;</span>, <span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="comment">// Generate keypair for the new account</span></span><br><span class="line">    <span class="keyword">const</span> newAccountKp = <span class="keyword">new</span> web3.<span class="title class_">Keypair</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Send transaction</span></span><br><span class="line">    <span class="keyword">const</span> data = <span class="keyword">new</span> <span class="title function_">BN</span>(<span class="number">42</span>);</span><br><span class="line">    <span class="keyword">const</span> txHash = <span class="keyword">await</span> pg.<span class="property">program</span>.<span class="property">methods</span></span><br><span class="line">      .<span class="title function_">initialize</span>(data)</span><br><span class="line">      .<span class="title function_">accounts</span>(&#123;</span><br><span class="line">        <span class="attr">newAccount</span>: newAccountKp.<span class="property">publicKey</span>,</span><br><span class="line">        <span class="attr">signer</span>: pg.<span class="property">wallet</span>.<span class="property">publicKey</span>,</span><br><span class="line">        <span class="attr">systemProgram</span>: web3.<span class="property">SystemProgram</span>.<span class="property">programId</span>,</span><br><span class="line">      &#125;)</span><br><span class="line">      .<span class="title function_">signers</span>([newAccountKp])</span><br><span class="line">      .<span class="title function_">rpc</span>();</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Use &#x27;solana confirm -v <span class="subst">$&#123;txHash&#125;</span>&#x27; to see the logs`</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Confirm transaction</span></span><br><span class="line">    <span class="keyword">await</span> pg.<span class="property">connection</span>.<span class="title function_">confirmTransaction</span>(txHash);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Fetch the created account</span></span><br><span class="line">    <span class="keyword">const</span> newAccount = <span class="keyword">await</span> pg.<span class="property">program</span>.<span class="property">account</span>.<span class="property">newAccount</span>.<span class="title function_">fetch</span>(</span><br><span class="line">      newAccountKp.<span class="property">publicKey</span></span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;On-chain data is:&quot;</span>, newAccount.<span class="property">data</span>.<span class="title function_">toString</span>());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check whether the data on-chain is equal to local &#x27;data&#x27;</span></span><br><span class="line">    <span class="title function_">assert</span>(data.<span class="title function_">eq</span>(newAccount.<span class="property">data</span>));</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://explorer.solana.com/tx/2B9j6Vg8nJPk3dMReKZpfQxjcAyDTT1icCMjdxsdCJxgc8VN2ANV1hkBqMdgP66x5uyTK3AHckTioxy6jT745UF5?cluster=devnet">here is the transction of it</a></p>
+<p>There are also some accounts list there:</p>
+<ol>
+<li><p><code>DK1RcxQV5pcWetBxpkp3C82B2oALMnFWzsZKPASHMYC5</code></p>
+<p>Same as above, this is my wallet account</p>
+</li>
+<li><p><code>5CykY57hsTJY3C7gPZrtyPk7s4hbdpmLYyrEmNKvKg5</code></p>
+<p>This is the address of data struct ‘NewAccount’</p>
+</li>
+<li><p>System Program<br>The Solana System Program for:</p>
+<ul>
+<li>Allocating space for the new account (16 bytes).</li>
+<li>Transferring the rent-exempt balance to make the account persistent</li>
+<li>Assigning ownership of the new account to the deployed program.</li>
+</ul>
+</li>
+<li><p><code>77xw1CSDzm1G6b554gf5GwbC2P2B4qLH6jPqzBSMZCcx</code></p>
+<p>The program account we are interacting.</p>
+</li>
+</ol>
+<h3 id="Data-Account"><a href="#Data-Account" class="headerlink" title="Data Account"></a>Data Account</h3><p>What we did here is calling the <code>initialize</code> function initializing the <code>NewAccount</code>. If we lookup it in the explorer, we can find that:</p>
+<ul>
+<li>Balance: 0.00100224 Sol</li>
+<li>Allocated Data Size: 16 byte(s)</li>
+<li>Assigned Program Id: <code>77xw1CSDzm1G6b554gf5GwbC2P2B4qLH6jPqzBSMZCcx</code>(The program id)</li>
+<li>Executable: No</li>
+</ul>
+<p>Comparing to Solidity, the Solana programs are “stateless”, the data is NOT part of the program.</p>
+<p><img src="https://solana-developer-content.vercel.app/assets/docs/core/accounts/data-account.svg" alt="alt text"></p>
+<p>If we look closely, we can find that the keypair of the data account is created or provided by the user, however the data account on-chain is owned by the program, how to understand this?</p>
+<ol>
+<li>Account Creation and Funding. The program itslef can not generate accounts, and creating account requires funds</li>
+<li>Ownership is Transferred. When the account is initialized on-chain, the program becomes the “owner” of the account:<ul>
+<li>The account’s behavior is governed by the program’s logic.</li>
+<li>Only instructions defined in the program can modify the account’s data.</li>
+</ul>
+</li>
+</ol>
+<p>Although the keypair is controled by the user, once the data account is on-chain, the keypair is useless, user can ONLY interact with it via the program. For example, we want to restrict the update operation to the creator account:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//snip</span></span><br><span class="line"><span class="meta">#[derive(Accounts)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">Update</span>&lt;<span class="symbol">&#x27;info</span>&gt; &#123;</span><br><span class="line">    <span class="meta">#[account(mut, has_one = owner)]</span></span><br><span class="line">    <span class="keyword">pub</span> new_account: Account&lt;<span class="symbol">&#x27;info</span>, NewAccount&gt;,</span><br><span class="line">    <span class="keyword">pub</span> owner: Signer&lt;<span class="symbol">&#x27;info</span>&gt;, <span class="comment">// Only the owner can authorize changes</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//snip</span></span><br><span class="line"><span class="meta">#[account]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">NewAccount</span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> owner: Pubkey,</span><br><span class="line">    <span class="keyword">pub</span> data: <span class="type">u64</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-Program-Derived-Accounts"><a href="#4-Program-Derived-Accounts" class="headerlink" title="4. Program Derived Accounts"></a>4. Program Derived Accounts</h2><p>PDA is a bit different comparing to the data account we learnt in previous section, it is generated fully by the program.You can think of PDAs as a way to create hashmap-like structures on-chain from a predefined set of inputs.<br><img src="https://solana-developer-content.vercel.app/assets/docs/core/pda/pda-derivation.svg" alt="alt text"></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> anchor_lang::prelude::*;</span><br><span class="line"></span><br><span class="line">declare_id!(<span class="string">&quot;75GJVCJNhaukaa2vCCqhreY31gaphv7XTScBChmr1ueR&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">#[program]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">mod</span> pda_account &#123;</span><br><span class="line">    <span class="keyword">use</span> super::*;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">initialize</span>(ctx: Context&lt;Initialize&gt;) <span class="punctuation">-&gt;</span> <span class="type">Result</span>&lt;()&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">account_data</span> = &amp;<span class="keyword">mut</span> ctx.accounts.pda_account;</span><br><span class="line">        <span class="comment">// store the address of the `user`</span></span><br><span class="line">        account_data.user = *ctx.accounts.user.key;</span><br><span class="line">        <span class="comment">// store the canonical bump</span></span><br><span class="line">        account_data.bump = ctx.bumps.pda_account;</span><br><span class="line">        <span class="title function_ invoke__">Ok</span>(())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Accounts)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">Initialize</span>&lt;<span class="symbol">&#x27;info</span>&gt; &#123;</span><br><span class="line">    <span class="meta">#[account(mut)]</span></span><br><span class="line">    <span class="keyword">pub</span> user: Signer&lt;<span class="symbol">&#x27;info</span>&gt;,</span><br><span class="line"></span><br><span class="line">    <span class="meta">#[account(</span></span><br><span class="line"><span class="meta">        init,</span></span><br><span class="line"><span class="meta">        // set the seeds to derive the PDA</span></span><br><span class="line"><span class="meta">        seeds = [b<span class="string">&quot;data&quot;</span>, user.key().as_ref()]</span>,</span><br><span class="line">        <span class="comment">// use the canonical bump</span></span><br><span class="line">        bump,</span><br><span class="line">        payer = user,</span><br><span class="line">        space = <span class="number">8</span> + DataAccount::INIT_SPACE</span><br><span class="line">    )]</span><br><span class="line">    <span class="keyword">pub</span> pda_account: Account&lt;<span class="symbol">&#x27;info</span>, DataAccount&gt;,</span><br><span class="line">    <span class="keyword">pub</span> system_program: Program&lt;<span class="symbol">&#x27;info</span>, System&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[account]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(InitSpace)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">DataAccount</span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> user: Pubkey,</span><br><span class="line">    <span class="keyword">pub</span> bump: <span class="type">u8</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> [<span class="variable constant_">PDA</span>] = <span class="title class_">PublicKey</span>.<span class="title function_">findProgramAddressSync</span>(</span><br><span class="line">  [<span class="title class_">Buffer</span>.<span class="title function_">from</span>(<span class="string">&quot;data&quot;</span>), user.<span class="property">publicKey</span>.<span class="title function_">toBuffer</span>()],</span><br><span class="line">  program.<span class="property">programId</span></span><br><span class="line">);</span><br><span class="line"><span class="title function_">it</span>(<span class="string">&quot;Is initialized!&quot;</span>, <span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> transactionSignature = <span class="keyword">await</span> program.<span class="property">methods</span></span><br><span class="line">    .<span class="title function_">initialize</span>()</span><br><span class="line">    .<span class="title function_">accounts</span>(&#123;</span><br><span class="line">      <span class="attr">user</span>: user.<span class="property">publicKey</span>,</span><br><span class="line">      <span class="attr">pdaAccount</span>: <span class="variable constant_">PDA</span>,</span><br><span class="line">    &#125;)</span><br><span class="line">    .<span class="title function_">rpc</span>();</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Transaction Signature:&quot;</span>, transactionSignature);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="title function_">it</span>(<span class="string">&quot;Fetch Account&quot;</span>, <span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> pdaAccount = <span class="keyword">await</span> program.<span class="property">account</span>.<span class="property">dataAccount</span>.<span class="title function_">fetch</span>(<span class="variable constant_">PDA</span>);</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(pdaAccount, <span class="literal">null</span>, <span class="number">2</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>You might ask what if the seeds created in client side is not derived from user pubkey as the program defined, the answer is the program will reject the transaction because the PDA won’t meet the constraint.</p>
+<h2 id="5-Fees"><a href="#5-Fees" class="headerlink" title="5.Fees"></a>5.Fees</h2><h3 id="Rent-Fees"><a href="#Rent-Fees" class="headerlink" title="Rent Fees"></a>Rent Fees</h3><ol>
+<li><p>Rent Calculation:</p>
+<ul>
+<li>The rent required for an account depends on its data size.</li>
+<li>Accounts that don’t maintain enough balance to cover their rent will eventually be deactivated (become inaccessible).</li>
+<li>the rent rates of program accounts and data accounts are not same.</li>
+</ul>
+</li>
+<li><p>Rent Exemption</p>
+<ul>
+<li>Rent is deducted over time from an account’s balance unless it is rent-exempt.</li>
+<li>No periodic rent will ever be deducted from the account as long as the balance remains at or above the required rent-exempt threshold.</li>
+</ul>
+</li>
+</ol>
+<h3 id="Transaction-Fees"><a href="#Transaction-Fees" class="headerlink" title="Transaction Fees"></a>Transaction Fees</h3><p>Do not forget transaction fees are charged.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2024/11/16/rust-0410-extra/" rel="next" title="Rust lesson 4.9 - Extra">
+                <i class="fa fa-chevron-left"></i> Rust lesson 4.9 - Extra
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Solana-Basics"><span class="nav-number">1.</span> <span class="nav-text">Solana Basics</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Account-Model"><span class="nav-number">1.1.</span> <span class="nav-text">1. Account Model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Program-Accounts"><span class="nav-number">1.2.</span> <span class="nav-text">2. Program Accounts</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Code"><span class="nav-number">1.2.1.</span> <span class="nav-text">The Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploying-Programs-on-chain"><span class="nav-number">1.2.2.</span> <span class="nav-text">Deploying Programs on-chain</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Interacting-with-On-chain-Programs"><span class="nav-number">1.3.</span> <span class="nav-text">3. Interacting with On-chain Programs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-Account"><span class="nav-number">1.3.1.</span> <span class="nav-text">Data Account</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Program-Derived-Accounts"><span class="nav-number">1.4.</span> <span class="nav-text">4. Program Derived Accounts</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Fees"><span class="nav-number">1.5.</span> <span class="nav-text">5.Fees</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rent-Fees"><span class="nav-number">1.5.1.</span> <span class="nav-text">Rent Fees</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transaction-Fees"><span class="nav-number">1.5.2.</span> <span class="nav-text">Transaction Fees</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

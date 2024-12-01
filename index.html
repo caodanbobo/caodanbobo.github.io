@@ -229,6 +229,401 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/30/rust-0501-solana&anchor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/11/30/rust-0501-solana&anchor/" itemprop="url">Rust lesson 5.1 - Solana Dev with Anchor</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-11-30T20:12:30+08:00">
+                2024-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Solana-Basics"><a href="#Solana-Basics" class="headerlink" title="Solana Basics"></a>Solana Basics</h1><h2 id="1-Account-Model"><a href="#1-Account-Model" class="headerlink" title="1. Account Model"></a>1. Account Model</h2><p><a target="_blank" rel="noopener" href="https://solana.com/docs/core/accounts">Solana Account Model</a></p>
+<h2 id="2-Program-Accounts"><a href="#2-Program-Accounts" class="headerlink" title="2. Program Accounts"></a>2. Program Accounts</h2><h3 id="The-Code"><a href="#The-Code" class="headerlink" title="The Code"></a>The Code</h3><p>Here is a simple solnana program coded in anchor:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> anchor_lang::prelude::*;</span><br><span class="line">declare_id!(<span class="string">&quot;77xw1CSDzm1G6b554gf5GwbC2P2B4qLH6jPqzBSMZCcx&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">#[program]</span></span><br><span class="line"><span class="keyword">mod</span> hello_anchor &#123;</span><br><span class="line">    <span class="keyword">use</span> super::*;</span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">initialize</span>(ctx: Context&lt;Initialize&gt;, data: <span class="type">u64</span>) <span class="punctuation">-&gt;</span> <span class="type">Result</span>&lt;()&gt; &#123;</span><br><span class="line">        ctx.accounts.new_account.data = data;</span><br><span class="line">        msg!(<span class="string">&quot;Changed data to: &#123;&#125;!&quot;</span>, data);</span><br><span class="line">        <span class="title function_ invoke__">Ok</span>(())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Accounts)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">Initialize</span>&lt;<span class="symbol">&#x27;info</span>&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">#[account(init, payer = signer, space = 8 + 8)]</span></span><br><span class="line">    <span class="keyword">pub</span> new_account: Account&lt;<span class="symbol">&#x27;info</span>, NewAccount&gt;,</span><br><span class="line">    <span class="meta">#[account(mut)]</span></span><br><span class="line">    <span class="keyword">pub</span> signer: Signer&lt;<span class="symbol">&#x27;info</span>&gt;,</span><br><span class="line">    <span class="keyword">pub</span> system_program: Program&lt;<span class="symbol">&#x27;info</span>, System&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[account]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">NewAccount</span> &#123;</span><br><span class="line">    data: <span class="type">u64</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This piece of code contains 4 parts:</p>
+<ol>
+<li>The <code>declare_id!</code> macro specifies the on-chain address of your program.</li>
+<li>The <code>#[program]</code> macro annotates a module containing functions that represent the program’s instructions. In other words, this is the logic of the program.</li>
+<li>The <code>#[derive(Accounts)]</code> macro is used to define a struct that specifies the accounts required for a particular instruction, where each field represents a separate account. In the example, to invoke <code>fn initialize</code>, we need to prepare all acconts defined in struct <code>Initialize</code></li>
+<li>The <code>#[account]</code> macro is used to define a struct that represents the data structure of an account created and owned by the program.</li>
+</ol>
+<p>In brife:</p>
+<ol>
+<li>The <code>#[account]</code> defines the data struct used in the solana program account(smart contract).</li>
+<li>We can use functions in mod annotated with <code>#[program]</code> to munipulte the data.</li>
+<li>However, to invoke certain function, we need to get ready all the accounts it need as <code>#[derive(Accounts)</code> required.</li>
+</ol>
+<h3 id="Deploying-Programs-on-chain"><a href="#Deploying-Programs-on-chain" class="headerlink" title="Deploying Programs on-chain"></a>Deploying Programs on-chain</h3><p><a target="_blank" rel="noopener" href="https://explorer.solana.com/tx/vmJMGRb2fxePtZpPvnE1JEEYxd4BR2uc1vMiDzkdEsYL3CT4QXgLMFMT6QEjXFR482ontMDBReEquBf376qtBzR?cluster=devnet">Here is the transation of deploying the program.</a></p>
+<p>We can see there several accounts in Account input(s) sections, let us see what are those:</p>
+<ol>
+<li><p><code>DK1RcxQV5pcWetBxpkp3C82B2oALMnFWzsZKPASHMYC5</code></p>
+<p>This is my public key, it’s marked as <code>payer, signer, writable</code>:</p>
+<ul>
+<li>payer, paying for transaction fee and program account rent fee</li>
+<li>Signs the transaction to authorize it</li>
+<li>writable because Solana deducts funds from this account</li>
+</ul>
+</li>
+<li><p><code>FMN5VwtrXqjMem3NX5Di6WVgFgi8d63jyBJ5BMSZfoZ6</code></p>
+<p>This is the account of the program we just deployed.</p>
+</li>
+<li><p><code>HzvKq6MNEQgMEbVkVZE46sLagAasLe3Ah2GFMZGUVw7M</code></p>
+<p>Program’s Program Executable Data Account, storing program’s codes.</p>
+</li>
+<li><p><code>n8bf7TJfB6NUZYwbruXP2MbQ49Fxw3ARKKjDZMLep71</code></p>
+<p>Buffer account used during the deployment, so it is no longer existed.</p>
+</li>
+<li><p><code>BPFLoaderUpgradeab1e11111111111111111111111</code><br>A special system program that facilitates deploying and upgrading BPF programs on Solana.</p>
+</li>
+<li><p>sysvar: clock and sysvar: rent.</p>
+</li>
+</ol>
+<p>Exactly what we learnt in <a target="_blank" rel="noopener" href="https://solana.com/docs/core/accounts">Solana Account Model</a>:</p>
+<blockquote>
+<p>When new programs are deployed on Solana, technically three separate accounts are created:</p>
+<ul>
+<li><strong>Program Account</strong>:The main account representing an on-chain program. This account stores the address of an executable data account (which stores the compiled program code) and the update authority for the program (address authorized to make changes to the program).</li>
+<li><strong>Program Executable Data Account</strong>: An account that contains the executable byte code of the program.</li>
+<li><strong>Buffer Account</strong>: A temporary account that stores byte code while a program is being actively deployed or upgraded. Once the process is complete, the data is transferred to the Program Executable Data Account and the buffer account is closed._</li>
+</ul>
+</blockquote>
+<p><img src="https://solana-developer-content.vercel.app/assets/docs/core/accounts/program-account-expanded.svg" alt="alt text"></p>
+<h2 id="3-Interacting-with-On-chain-Programs"><a href="#3-Interacting-with-On-chain-Programs" class="headerlink" title="3. Interacting with On-chain Programs"></a>3. Interacting with On-chain Programs</h2><p>let’s use the test script to show you how to interact with the program:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// No imports needed: web3, anchor, pg and more are globally available</span></span><br><span class="line"></span><br><span class="line"><span class="title function_">describe</span>(<span class="string">&quot;Test&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">it</span>(<span class="string">&quot;initialize&quot;</span>, <span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="comment">// Generate keypair for the new account</span></span><br><span class="line">    <span class="keyword">const</span> newAccountKp = <span class="keyword">new</span> web3.<span class="title class_">Keypair</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Send transaction</span></span><br><span class="line">    <span class="keyword">const</span> data = <span class="keyword">new</span> <span class="title function_">BN</span>(<span class="number">42</span>);</span><br><span class="line">    <span class="keyword">const</span> txHash = <span class="keyword">await</span> pg.<span class="property">program</span>.<span class="property">methods</span></span><br><span class="line">      .<span class="title function_">initialize</span>(data)</span><br><span class="line">      .<span class="title function_">accounts</span>(&#123;</span><br><span class="line">        <span class="attr">newAccount</span>: newAccountKp.<span class="property">publicKey</span>,</span><br><span class="line">        <span class="attr">signer</span>: pg.<span class="property">wallet</span>.<span class="property">publicKey</span>,</span><br><span class="line">        <span class="attr">systemProgram</span>: web3.<span class="property">SystemProgram</span>.<span class="property">programId</span>,</span><br><span class="line">      &#125;)</span><br><span class="line">      .<span class="title function_">signers</span>([newAccountKp])</span><br><span class="line">      .<span class="title function_">rpc</span>();</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Use &#x27;solana confirm -v <span class="subst">$&#123;txHash&#125;</span>&#x27; to see the logs`</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Confirm transaction</span></span><br><span class="line">    <span class="keyword">await</span> pg.<span class="property">connection</span>.<span class="title function_">confirmTransaction</span>(txHash);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Fetch the created account</span></span><br><span class="line">    <span class="keyword">const</span> newAccount = <span class="keyword">await</span> pg.<span class="property">program</span>.<span class="property">account</span>.<span class="property">newAccount</span>.<span class="title function_">fetch</span>(</span><br><span class="line">      newAccountKp.<span class="property">publicKey</span></span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;On-chain data is:&quot;</span>, newAccount.<span class="property">data</span>.<span class="title function_">toString</span>());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check whether the data on-chain is equal to local &#x27;data&#x27;</span></span><br><span class="line">    <span class="title function_">assert</span>(data.<span class="title function_">eq</span>(newAccount.<span class="property">data</span>));</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://explorer.solana.com/tx/2B9j6Vg8nJPk3dMReKZpfQxjcAyDTT1icCMjdxsdCJxgc8VN2ANV1hkBqMdgP66x5uyTK3AHckTioxy6jT745UF5?cluster=devnet">here is the transction of it</a></p>
+<p>There are also some accounts list there:</p>
+<ol>
+<li><p><code>DK1RcxQV5pcWetBxpkp3C82B2oALMnFWzsZKPASHMYC5</code></p>
+<p>Same as above, this is my wallet account</p>
+</li>
+<li><p><code>5CykY57hsTJY3C7gPZrtyPk7s4hbdpmLYyrEmNKvKg5</code></p>
+<p>This is the address of data struct ‘NewAccount’</p>
+</li>
+<li><p>System Program<br>The Solana System Program for:</p>
+<ul>
+<li>Allocating space for the new account (16 bytes).</li>
+<li>Transferring the rent-exempt balance to make the account persistent</li>
+<li>Assigning ownership of the new account to the deployed program.</li>
+</ul>
+</li>
+<li><p><code>77xw1CSDzm1G6b554gf5GwbC2P2B4qLH6jPqzBSMZCcx</code></p>
+<p>The program account we are interacting.</p>
+</li>
+</ol>
+<h3 id="Data-Account"><a href="#Data-Account" class="headerlink" title="Data Account"></a>Data Account</h3><p>What we did here is calling the <code>initialize</code> function initializing the <code>NewAccount</code>. If we lookup it in the explorer, we can find that:</p>
+<ul>
+<li>Balance: 0.00100224 Sol</li>
+<li>Allocated Data Size: 16 byte(s)</li>
+<li>Assigned Program Id: <code>77xw1CSDzm1G6b554gf5GwbC2P2B4qLH6jPqzBSMZCcx</code>(The program id)</li>
+<li>Executable: No</li>
+</ul>
+<p>Comparing to Solidity, the Solana programs are “stateless”, the data is NOT part of the program.</p>
+<p><img src="https://solana-developer-content.vercel.app/assets/docs/core/accounts/data-account.svg" alt="alt text"></p>
+<p>If we look closely, we can find that the keypair of the data account is created or provided by the user, however the data account on-chain is owned by the program, how to understand this?</p>
+<ol>
+<li>Account Creation and Funding. The program itslef can not generate accounts, and creating account requires funds</li>
+<li>Ownership is Transferred. When the account is initialized on-chain, the program becomes the “owner” of the account:<ul>
+<li>The account’s behavior is governed by the program’s logic.</li>
+<li>Only instructions defined in the program can modify the account’s data.</li>
+</ul>
+</li>
+</ol>
+<p>Although the keypair is controled by the user, once the data account is on-chain, the keypair is useless, user can ONLY interact with it via the program. For example, we want to restrict the update operation to the creator account:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//snip</span></span><br><span class="line"><span class="meta">#[derive(Accounts)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">Update</span>&lt;<span class="symbol">&#x27;info</span>&gt; &#123;</span><br><span class="line">    <span class="meta">#[account(mut, has_one = owner)]</span></span><br><span class="line">    <span class="keyword">pub</span> new_account: Account&lt;<span class="symbol">&#x27;info</span>, NewAccount&gt;,</span><br><span class="line">    <span class="keyword">pub</span> owner: Signer&lt;<span class="symbol">&#x27;info</span>&gt;, <span class="comment">// Only the owner can authorize changes</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//snip</span></span><br><span class="line"><span class="meta">#[account]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">NewAccount</span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> owner: Pubkey,</span><br><span class="line">    <span class="keyword">pub</span> data: <span class="type">u64</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-Program-Derived-Accounts"><a href="#4-Program-Derived-Accounts" class="headerlink" title="4. Program Derived Accounts"></a>4. Program Derived Accounts</h2><p>PDA is a bit different comparing to the data account we learnt in previous section, it is generated fully by the program.You can think of PDAs as a way to create hashmap-like structures on-chain from a predefined set of inputs.<br><img src="https://solana-developer-content.vercel.app/assets/docs/core/pda/pda-derivation.svg" alt="alt text"></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> anchor_lang::prelude::*;</span><br><span class="line"></span><br><span class="line">declare_id!(<span class="string">&quot;75GJVCJNhaukaa2vCCqhreY31gaphv7XTScBChmr1ueR&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">#[program]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">mod</span> pda_account &#123;</span><br><span class="line">    <span class="keyword">use</span> super::*;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">initialize</span>(ctx: Context&lt;Initialize&gt;) <span class="punctuation">-&gt;</span> <span class="type">Result</span>&lt;()&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">account_data</span> = &amp;<span class="keyword">mut</span> ctx.accounts.pda_account;</span><br><span class="line">        <span class="comment">// store the address of the `user`</span></span><br><span class="line">        account_data.user = *ctx.accounts.user.key;</span><br><span class="line">        <span class="comment">// store the canonical bump</span></span><br><span class="line">        account_data.bump = ctx.bumps.pda_account;</span><br><span class="line">        <span class="title function_ invoke__">Ok</span>(())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Accounts)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">Initialize</span>&lt;<span class="symbol">&#x27;info</span>&gt; &#123;</span><br><span class="line">    <span class="meta">#[account(mut)]</span></span><br><span class="line">    <span class="keyword">pub</span> user: Signer&lt;<span class="symbol">&#x27;info</span>&gt;,</span><br><span class="line"></span><br><span class="line">    <span class="meta">#[account(</span></span><br><span class="line"><span class="meta">        init,</span></span><br><span class="line"><span class="meta">        // set the seeds to derive the PDA</span></span><br><span class="line"><span class="meta">        seeds = [b<span class="string">&quot;data&quot;</span>, user.key().as_ref()]</span>,</span><br><span class="line">        <span class="comment">// use the canonical bump</span></span><br><span class="line">        bump,</span><br><span class="line">        payer = user,</span><br><span class="line">        space = <span class="number">8</span> + DataAccount::INIT_SPACE</span><br><span class="line">    )]</span><br><span class="line">    <span class="keyword">pub</span> pda_account: Account&lt;<span class="symbol">&#x27;info</span>, DataAccount&gt;,</span><br><span class="line">    <span class="keyword">pub</span> system_program: Program&lt;<span class="symbol">&#x27;info</span>, System&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[account]</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(InitSpace)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">DataAccount</span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> user: Pubkey,</span><br><span class="line">    <span class="keyword">pub</span> bump: <span class="type">u8</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> [<span class="variable constant_">PDA</span>] = <span class="title class_">PublicKey</span>.<span class="title function_">findProgramAddressSync</span>(</span><br><span class="line">  [<span class="title class_">Buffer</span>.<span class="title function_">from</span>(<span class="string">&quot;data&quot;</span>), user.<span class="property">publicKey</span>.<span class="title function_">toBuffer</span>()],</span><br><span class="line">  program.<span class="property">programId</span></span><br><span class="line">);</span><br><span class="line"><span class="title function_">it</span>(<span class="string">&quot;Is initialized!&quot;</span>, <span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> transactionSignature = <span class="keyword">await</span> program.<span class="property">methods</span></span><br><span class="line">    .<span class="title function_">initialize</span>()</span><br><span class="line">    .<span class="title function_">accounts</span>(&#123;</span><br><span class="line">      <span class="attr">user</span>: user.<span class="property">publicKey</span>,</span><br><span class="line">      <span class="attr">pdaAccount</span>: <span class="variable constant_">PDA</span>,</span><br><span class="line">    &#125;)</span><br><span class="line">    .<span class="title function_">rpc</span>();</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Transaction Signature:&quot;</span>, transactionSignature);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="title function_">it</span>(<span class="string">&quot;Fetch Account&quot;</span>, <span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> pdaAccount = <span class="keyword">await</span> program.<span class="property">account</span>.<span class="property">dataAccount</span>.<span class="title function_">fetch</span>(<span class="variable constant_">PDA</span>);</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(pdaAccount, <span class="literal">null</span>, <span class="number">2</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>You might ask what if the seeds created in client side is not derived from user pubkey as the program defined, the answer is the program will reject the transaction because the PDA won’t meet the constraint.</p>
+<h2 id="5-Fees"><a href="#5-Fees" class="headerlink" title="5.Fees"></a>5.Fees</h2><h3 id="Rent-Fees"><a href="#Rent-Fees" class="headerlink" title="Rent Fees"></a>Rent Fees</h3><ol>
+<li><p>Rent Calculation:</p>
+<ul>
+<li>The rent required for an account depends on its data size.</li>
+<li>Accounts that don’t maintain enough balance to cover their rent will eventually be deactivated (become inaccessible).</li>
+<li>the rent rates of program accounts and data accounts are not same.</li>
+</ul>
+</li>
+<li><p>Rent Exemption</p>
+<ul>
+<li>Rent is deducted over time from an account’s balance unless it is rent-exempt.</li>
+<li>No periodic rent will ever be deducted from the account as long as the balance remains at or above the required rent-exempt threshold.</li>
+</ul>
+</li>
+</ol>
+<h3 id="Transaction-Fees"><a href="#Transaction-Fees" class="headerlink" title="Transaction Fees"></a>Transaction Fees</h3><p>Do not forget transaction fees are charged.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/16/rust-0410-extra/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2024/11/16/rust-0410-extra/" itemprop="url">Rust lesson 4.9 - Extra</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-11-16T16:17:16+08:00">
+                2024-11-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Extended-topics"><a href="#Extended-topics" class="headerlink" title="Extended topics"></a>Extended topics</h1><h2 id="Deref-and-deref-coercion-with-Vec-examples"><a href="#Deref-and-deref-coercion-with-Vec-examples" class="headerlink" title="Deref and deref coercion with Vec examples"></a><code>Deref</code> and deref coercion with <code>Vec</code> examples</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">v</span>=<span class="built_in">vec!</span>[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>];</span><br></pre></td></tr></table></figure>
+
+<p>For the <code>v</code>, what are <code>&amp;v</code> and <code>*v</code>?</p>
+<h3 id="Dereference-of-v-v"><a href="#Dereference-of-v-v" class="headerlink" title="Dereference of v: *v"></a>Dereference of v: <code>*v</code></h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[stable(feature = <span class="string">&quot;rust1&quot;</span>, since = <span class="string">&quot;1.0.0&quot;</span>)]</span></span><br><span class="line"><span class="keyword">impl</span>&lt;T, A: Allocator&gt; ops::Deref <span class="keyword">for</span> <span class="title class_">Vec</span>&lt;T, A&gt; &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Target</span> = [T];</span><br><span class="line"></span><br><span class="line">    <span class="meta">#[inline]</span></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">deref</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> &amp;[T] &#123;</span><br><span class="line">        <span class="keyword">unsafe</span> &#123; slice::<span class="title function_ invoke__">from_raw_parts</span>(<span class="keyword">self</span>.<span class="title function_ invoke__">as_ptr</span>(), <span class="keyword">self</span>.len) &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>For type <code>T</code> that implements <code>Deref</code>, Rust treats <code>*t</code> as <code>*(t.deref())</code>.</p>
+<p>As we can the source code of <code>Vec</code> listed above, the <code>deref()</code> returns a slice, so <strong><code>*v</code> is a slice</strong>, which is [T]. ( FYI,Array is [T;N], don’t get confused).</p>
+<h3 id="Reference-of-v-v"><a href="#Reference-of-v-v" class="headerlink" title="Reference of v: &amp;v"></a>Reference of v: <code>&amp;v</code></h3><p>This is more complex, Rust can decide use <code>&amp;v</code> as:</p>
+<ul>
+<li>Type inference: What type does the context expect? (&amp;Vec<T> or &amp;[T]).</li>
+<li>Deref coercion: If a slice (&amp;[T]) is expected, Rust automatically dereferences the vector.</li>
+</ul>
+<h4 id="Reference-of-Vec-struct"><a href="#Reference-of-Vec-struct" class="headerlink" title="Reference of Vec struct"></a>Reference of Vec struct</h4><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">v</span> = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// Reference to Vec&lt;T&gt;</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">ref_to_vec</span>: &amp;<span class="type">Vec</span>&lt;<span class="type">i32</span>&gt; = &amp;v</span><br></pre></td></tr></table></figure>
+
+<h4 id="Deref-coercion"><a href="#Deref-coercion" class="headerlink" title="Deref coercion"></a>Deref coercion</h4><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">v</span> = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</span><br><span class="line"><span class="comment">// Slice reference</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">slice</span>: &amp;[<span class="type">i32</span>] = &amp;v; <span class="comment">// Deref coercion: &amp;v becomes &amp;[i32]</span></span><br></pre></td></tr></table></figure>
+
+<p>This is tricky, right?</p>
+<p><strong>Deref coercion</strong> is a compiler feature that automatically converts a reference to a type into a reference to its target type.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[stable(feature = <span class="string">&quot;rust1&quot;</span>, since = <span class="string">&quot;1.0.0&quot;</span>)]</span></span><br><span class="line"><span class="keyword">impl</span>&lt;T, A: Allocator&gt; ops::Deref <span class="keyword">for</span> <span class="title class_">Vec</span>&lt;T, A&gt; &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Target</span> = [T];</span><br><span class="line"></span><br><span class="line">    <span class="meta">#[inline]</span></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">deref</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> &amp;[T] &#123;</span><br><span class="line">        <span class="keyword">unsafe</span> &#123; slice::<span class="title function_ invoke__">from_raw_parts</span>(<span class="keyword">self</span>.<span class="title function_ invoke__">as_ptr</span>(), <span class="keyword">self</span>.len) &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This means, for <code>Vec&lt;T&gt;</code> ‘v’, <code>&amp;v</code> can be coverted to <code>&amp;[t]</code>. This is because of the <code>Deref</code> trait.</p>
+<p>What is more, Deref coercion can be done as many times as needed.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ops::Deref;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">MyBox</span>&lt;T&gt;(T);</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;T&gt; Deref <span class="keyword">for</span> <span class="title class_">MyBox</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Target</span> = T;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">deref</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> &amp;<span class="keyword">Self</span>::Target &#123;</span><br><span class="line">        &amp;<span class="keyword">self</span>.<span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">takes_slice</span>(s: &amp;[<span class="type">i32</span>]) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;:?&#125;&quot;</span>, s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">my_box</span> = <span class="title function_ invoke__">MyBox</span>(<span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Explicit Deref</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">slice</span>: &amp;[<span class="type">i32</span>] = &amp;*my_box; <span class="comment">// `deref()` is called manually</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;:?&#125;&quot;</span>, slice);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Deref Coercion</span></span><br><span class="line">    <span class="title function_ invoke__">takes_slice</span>(&amp;my_box); <span class="comment">// Compiler converts `&amp;MyBox&lt;Vec&lt;i32&gt;&gt;` -&gt; `&amp;Vec&lt;i32&gt;` -&gt; `&amp;[i32]`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>What Happens in Each Case:</p>
+<ol>
+<li>Explicit Dereferencing (<code>&amp;*my_box</code>):<ul>
+<li><code>*my_box</code> calls deref(), yielding <code>*(&amp;Vec&lt;i32&gt;)</code>, which is <code>Vec&lt;i32&gt;</code>.</li>
+<li><code>&amp;*my_box</code> is <code>&amp;Vec&lt;i32&gt;</code>, derefed into <code>&amp;[i32]</code>.</li>
+</ul>
+</li>
+<li>Deref Coercion (takes_slice(&amp;my_box)):<ul>
+<li>Rust sees takes_slice expects &amp;[i32].</li>
+<li>It applies deref() twice:</li>
+<li>&amp;MyBox&lt;Vec<i32>&gt; → &amp;Vec<i32>.</li>
+<li>&amp;Vec<i32> → &amp;[i32].</li>
+</ul>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/07/rust-0409-test/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1517,312 +1912,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/20/rust-0401-Box/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/10/20/rust-0401-Box/" itemprop="url">Rust lesson 4.1 - Smart Pointer</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-20T15:31:53+08:00">
-                2024-10-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Introducing-smart-pointer-Box"><a href="#Introducing-smart-pointer-Box" class="headerlink" title="Introducing smart pointer Box&lt;T&gt;"></a>Introducing smart pointer <code>Box&lt;T&gt;</code></h1><h2 id="1-what-is-Box"><a href="#1-what-is-Box" class="headerlink" title="1. what is Box&lt;T&gt;"></a>1. what is <code>Box&lt;T&gt;</code></h2><p><code>Pointer</code>: A variable that contains a address of another variable, e.g., &amp;i32, &amp;[T], etc.</p>
-<p><code>Box&lt;T&gt;</code> is no different, it allows us to store data on the heap, and it store a address of the heap.</p>
-<h2 id="What-is-it-for"><a href="#What-is-it-for" class="headerlink" title="What is it for"></a>What is it for</h2><h3 id="1-Storing-data-on-the-heap"><a href="#1-Storing-data-on-the-heap" class="headerlink" title="1. Storing data on the heap"></a>1. Storing data on the heap</h3><p>In the following example, we store 5 on the heap instead of stack.</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">b</span> = <span class="type">Box</span>::<span class="title function_ invoke__">new</span>(<span class="number">5</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;b = &#123;b&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-Enabling-Recursive-types"><a href="#2-Enabling-Recursive-types" class="headerlink" title="2. Enabling Recursive types"></a>2. Enabling Recursive types</h3><p>The following enum is not valid in rust. Previously, we have discussed the memory layout of enum, we learnt that the size of the enum depends on the largest variant b. The <code>List</code> here is a recursize type, there is no way to know the size of it, the Rust would assume the size of it is infinite.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">enum List &#123;</span><br><span class="line">    Cons(i32, List), //wrong</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>However, the size of <code>Box&lt;T&gt;</code> is fixed, it enables us to use recursive types like</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">List</span> &#123;</span><br><span class="line">    <span class="title function_ invoke__">Cons</span>(<span class="type">i32</span>, <span class="type">Box</span>&lt;List&gt;),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Featurs-of-a-smart-pointer"><a href="#Featurs-of-a-smart-pointer" class="headerlink" title="Featurs of a smart pointer"></a>Featurs of a smart pointer</h2><h3 id="Dereference-using-Deref-Trait"><a href="#Dereference-using-Deref-Trait" class="headerlink" title="Dereference using Deref Trait"></a>Dereference using <code>Deref</code> Trait</h3><p><code>Box&lt;T&gt;</code> implements <code>Deref</code> trait which provides a function <code>deref</code> that would return the &amp;T:</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ops::Deref;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;T&gt; Deref <span class="keyword">for</span> <span class="title class_">MyBox</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Target</span> = T;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">deref</span>(&amp;<span class="keyword">self</span>) <span class="punctuation">-&gt;</span> &amp;<span class="keyword">Self</span>::Target &#123;</span><br><span class="line">        &amp;<span class="keyword">self</span>.<span class="number">0</span> <span class="comment">//MyBox is a tuple struct</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>*y</code> would be subsitutes the ‘_‘ with a call to <code>deref</code> by rust:</p>
-<p><code>*y</code> &#x3D;&gt; <code>*(y.deref())</code> &#x3D;&gt; <code>*(&amp;x)</code>&#x3D;&gt;<code>x</code></p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">y</span> = <span class="type">Box</span>::<span class="title function_ invoke__">new</span>(x);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, x);</span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="number">5</span>, *y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Mutable-reference-with-DerefMut"><a href="#Mutable-reference-with-DerefMut" class="headerlink" title="Mutable reference with DerefMut"></a>Mutable reference with <code>DerefMut</code></h3><p>Similar to <code>Deref</code>, <code>DerefMut</code> provides a <code>deref_mut</code> function return a mutable reference of T:</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ops::DerefMut;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span>&lt;T&gt; DerefMut <span class="keyword">for</span> <span class="title class_">MyBox</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Target</span> = T;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">deref_mut</span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) <span class="punctuation">-&gt;</span> &amp;<span class="keyword">mut</span> <span class="keyword">Self</span>::Target &#123;</span><br><span class="line">        &amp;<span class="keyword">mut</span> <span class="keyword">self</span>.<span class="number">0</span> <span class="comment">//MyBox is a tuple struct</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Cleanup-automatically"><a href="#Cleanup-automatically" class="headerlink" title="Cleanup automatically"></a>Cleanup automatically</h3><p><code>Box&lt;T&gt;</code> also implements <code>Drop</code> trait, witch provides a <code>drop</code> allowing customizeable actions when a value is about to out of scope.</p>
-<p>In terms of <code>Box&lt;T&gt;</code>, the <code>drop</code> is set to deallocate the space on the heap that the box points to.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/16/rust-0308-collections/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2024/10/16/rust-0308-collections/" itemprop="url">Rust lesson 3.8 - Collections</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2024-10-16T20:55:47+08:00">
-                2024-10-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Introducing-commonly-used-collections"><a href="#Introducing-commonly-used-collections" class="headerlink" title="Introducing commonly used collections"></a>Introducing commonly used collections</h1><h2 id="1-String"><a href="#1-String" class="headerlink" title="1. String"></a>1. String</h2><h3 id="Creating-a-string"><a href="#Creating-a-string" class="headerlink" title="Creating a string"></a>Creating a string</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// create a emtpy string</span></span><br><span class="line"><span class="type">String</span> a_string = <span class="type">String</span>::<span class="title function_ invoke__">new</span>();</span><br><span class="line"><span class="comment">//create a string with string literals</span></span><br><span class="line"><span class="type">String</span> b_string= <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;b string&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<h3 id="String-manipulation"><a href="#String-manipulation" class="headerlink" title="String manipulation"></a>String manipulation</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//append</span></span><br><span class="line">a_string.<span class="title function_ invoke__">push</span>(<span class="string">&#x27;a&#x27;</span>); <span class="comment">//a</span></span><br><span class="line">a_string.<span class="title function_ invoke__">push_str</span>(<span class="string">&quot;string&quot;</span>); <span class="comment">// astring</span></span><br><span class="line"><span class="comment">//insert</span></span><br><span class="line">a_string.<span class="title function_ invoke__">insert</span>(<span class="number">1</span>,<span class="string">&#x27; &#x27;</span>); <span class="comment">// a string</span></span><br><span class="line">a_string.<span class="title function_ invoke__">insert_str</span>(<span class="number">2</span>,<span class="string">&quot;longer &quot;</span>); <span class="comment">// a longer string</span></span><br><span class="line"><span class="comment">//replace</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">shorter</span>=a_string.<span class="title function_ invoke__">replace</span>(<span class="string">&quot;longer&quot;</span>, <span class="string">&quot;shorter&quot;</span>); <span class="comment">// a_string remains</span></span><br><span class="line"><span class="comment">//remove last</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">last_char</span>=a_string.<span class="title function_ invoke__">pop</span>();<span class="comment">//g</span></span><br><span class="line"><span class="comment">//remove nth</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">third_char</span>=a_string.<span class="title function_ invoke__">remove</span>(<span class="number">2</span>);<span class="comment">//s</span></span><br><span class="line"><span class="comment">//concate</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">a_b</span>=a_string + &amp;b_string;</span><br><span class="line"></span><br><span class="line"><span class="comment">//escape</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">rust_string</span>=<span class="string">&quot;\x52\x75\x73\74&quot;</span>; <span class="comment">//rust</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">rust_hex</span>=<span class="string">&quot;\\x52\\x75\\x73\\74&quot;</span>; <span class="comment">// \x52\x75\x73\74</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">rust_hex_</span>=r=<span class="string">r#&quot;\x52\x75\x73\74&quot;#</span>;<span class="comment">// \x52\x75\x73\74</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="References-of-a-String"><a href="#References-of-a-String" class="headerlink" title="References of a String"></a>References of a String</h3><h4 id="String-Slice-str"><a href="#String-Slice-str" class="headerlink" title="String Slice (&amp;str)"></a>String Slice (&amp;str)</h4><p>it is referenced to part or the whole String.</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">hello_string</span>=Strin::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">s_part</span>:&amp;<span class="type">str</span> =&amp;hello_string[<span class="number">1</span>..<span class="number">3</span>]; <span class="comment">//&quot;el&quot;</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">s_whole</span>:&amp;<span class="type">str</span> =&amp;hello_string[..]; <span class="comment">//&quot;hello&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//string literal is also a string slice</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">s_literals</span>:&amp;<span class="type">str</span> = <span class="string">&quot;this is a string&quot;</span>;</span><br></pre></td></tr></table></figure>
-
-<h4 id="String-reference-String"><a href="#String-reference-String" class="headerlink" title="String reference (&amp;String)"></a>String reference (&amp;String)</h4><p>Just like other references, it is just a reference to String.</p>
-<h2 id="2-Vectors"><a href="#2-Vectors" class="headerlink" title="2. Vectors"></a>2. Vectors</h2><h3 id="Creating-a-New-Vector"><a href="#Creating-a-New-Vector" class="headerlink" title="Creating a New Vector"></a>Creating a New Vector</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">v_1</span>: <span class="type">Vec</span>&lt;<span class="type">i32</span>&gt; = <span class="type">Vec</span>::<span class="title function_ invoke__">new</span>();</span><br><span class="line">v_1.<span class="title function_ invoke__">push</span>(<span class="number">1</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">v_2</span> = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br></pre></td></tr></table></figure>
-
-<h3 id="Accessing-element"><a href="#Accessing-element" class="headerlink" title="Accessing element"></a>Accessing element</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">sec_num</span>=v_2[<span class="number">1</span>];</span><br><span class="line"><span class="comment">//let panic_num=v_2[3];</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">third</span>: <span class="type">Option</span>&lt;&amp;<span class="type">i32</span>&gt;=v_2.<span class="title function_ invoke__">get</span>(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-
-<h3 id="deleting-elements"><a href="#deleting-elements" class="headerlink" title="deleting elements"></a>deleting elements</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">v_2</span> = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">let</span> <span class="variable">last</span>=v2.<span class="title function_ invoke__">pop</span>(); <span class="comment">// remove last element</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="Slice-T"><a href="#Slice-T" class="headerlink" title="Slice &amp;[T]"></a>Slice &amp;[T]</h3><p>The type &amp;[T] is a reference (or pointer) to a slice of data that can reside in either an array or a vector.</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">printSlice</span>(slice: &amp;[<span class="type">i32</span>])&#123;</span><br><span class="line">    <span class="built_in">println!</span>&#123;<span class="string">&quot;&#123;&#125;&quot;</span>, slice&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>()&#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">my_vec</span> = <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">my_array</span> = [<span class="number">5</span>; <span class="number">3</span>];</span><br><span class="line">    <span class="title function_ invoke__">printSlice</span>(&amp;my_vec);</span><br><span class="line">    <span class="title function_ invoke__">printSlice</span>(&amp;my_array);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-HashMap"><a href="#3-HashMap" class="headerlink" title="3. HashMap"></a>3. HashMap</h2><p>The HashMap does not come with prelude, to use it we need to <code>use std::collections::HashMap;</code>.</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">scores</span> = HashMap::<span class="title function_ invoke__">new</span>();</span><br><span class="line"><span class="comment">//inserting elements, it is a HashMap&lt;String, i32&gt;</span></span><br><span class="line">scores.<span class="title function_ invoke__">insert</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;Blue&quot;</span>), <span class="number">10</span>);</span><br><span class="line">scores.<span class="title function_ invoke__">insert</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;Yellow&quot;</span>), <span class="number">50</span>);</span><br><span class="line"><span class="comment">//updating elements</span></span><br><span class="line">scores.<span class="title function_ invoke__">insert</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;Blue&quot;</span>), <span class="number">60</span>);</span><br><span class="line"><span class="comment">//getting elements</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">team_name</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;Blue&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">score</span> = scores.<span class="title function_ invoke__">get</span>(&amp;team_name).<span class="title function_ invoke__">copied</span>().<span class="title function_ invoke__">unwrap_or</span>(<span class="number">0</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="Hash-Maps-and-Ownership"><a href="#Hash-Maps-and-Ownership" class="headerlink" title="Hash Maps and Ownership"></a>Hash Maps and Ownership</h3><p>For non-Copy types, <code>insert</code> would move the ownership to the map.</p>
-<h2 id="4-loop-over-the-collections"><a href="#4-loop-over-the-collections" class="headerlink" title="4. loop over the collections"></a>4. loop over the collections</h2><p><code>for</code> loop will be the choice to loop over the collections</p>
-<h3 id="for-each"><a href="#for-each" class="headerlink" title="for each"></a>for each</h3><p><code>for</code> loop will loop over the collections with the iterator of the collections:</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// for item in iterators&#123;</span></span><br><span class="line"><span class="comment">//     // do something with &#x27;item&#x27;</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//vector</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">nums</span>=<span class="built_in">vec!</span>[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">for</span> <span class="title class_">n</span>:&amp;<span class="type">i32</span> <span class="keyword">in</span> nums.<span class="title function_ invoke__">iter</span>() &#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//or</span></span><br><span class="line"><span class="keyword">for</span> <span class="title class_">n</span>:&amp;<span class="type">i32</span> <span class="keyword">in</span> &amp;nums &#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//HashMap</span></span><br><span class="line"><span class="keyword">use</span> std::collections::HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">map</span> = HashMap::<span class="title function_ invoke__">from</span>([</span><br><span class="line">    (<span class="string">&quot;a&quot;</span>, <span class="number">1</span>),</span><br><span class="line">    (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>),</span><br><span class="line">    (<span class="string">&quot;c&quot;</span>, <span class="number">3</span>),</span><br><span class="line">]);</span><br><span class="line"><span class="keyword">for</span> (key:&amp;&amp;<span class="type">str</span>, val:&amp;<span class="type">i32</span>) <span class="keyword">in</span> map.<span class="title function_ invoke__">iter</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;key: &#123;key&#125; val: &#123;val&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//or</span></span><br><span class="line"><span class="keyword">for</span> (key:&amp;&amp;<span class="type">str</span>, val:&amp;<span class="type">i32</span>) <span class="keyword">in</span> map.<span class="title function_ invoke__">iter</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;key: &#123;key&#125; val: &#123;val&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>For collections implemented <code>IntoIterator</code>, let’s say the collection type is <code>List</code>,the <code>list.iter()</code> is same as <code>&amp;list</code>. This is because <code>&amp;list</code> in a <code>for</code> loop implicitly calls <code>.iter()</code>. This goes for <code>list</code> and <code>.into_iter()</code> as well.</p>
-<h3 id="for-i"><a href="#for-i" class="headerlink" title="for i"></a>for i</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// for item in iterators&#123;</span></span><br><span class="line"><span class="comment">//     // do something with &#x27;item&#x27;</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//vector</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">nums</span>=<span class="built_in">vec!</span>[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">for</span> (i:<span class="type">usize</span>, n:&amp;<span class="type">i32</span>) <span class="keyword">in</span> nums.iter.<span class="title function_ invoke__">enumerate</span>() &#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The &#123;&#125;th element is &#123;&#125;&quot;</span>, i, n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="for-dealing-with-ownerships"><a href="#for-dealing-with-ownerships" class="headerlink" title="for dealing with ownerships"></a><code>for</code> dealing with ownerships</h3><p>There are three common methods which can create iterators from a collection:</p>
-<ul>
-<li>iter(), which iterates over &amp;T.</li>
-<li>iter_mut(), which iterates over &amp;mut T.</li>
-<li>into_iter(), which iterates over T.</li>
-</ul>
-<h4 id="Trait-std-iter-Iterator"><a href="#Trait-std-iter-Iterator" class="headerlink" title="Trait std::iter::Iterator"></a>Trait std::iter::Iterator</h4><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">trait</span> <span class="title class_">Iterator</span> &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Item</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Trait Iterator requires a <code>next</code> method:</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">next</span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">Option</span>&lt;<span class="keyword">Self</span>::Item&gt;</span><br></pre></td></tr></table></figure>
-
-<p><code>next()</code> method of an iterator in Rust is designed to “consume” the iterator step-by-step by returning an Option containing each successive element, or None when there are no more elements.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
   </nav>
 
 
@@ -1868,7 +1962,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
